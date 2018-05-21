@@ -10,17 +10,10 @@
         "moduleResolution": "node",
         "baseUrl": "./",
         "paths": {
-            "LIB/*": [
-                "src/canvas/lib/*"
-            ]
+            "Request/*": ["src/request/*"],
+            "LIB/*": ["src/canvas/lib/*"]
         },
-        "lib": [
-            "es2015",
-            "es2017",
-            "dom"
-        ]
+        "lib": ["es2015", "es2017", "dom"]
     },
-    "include": [
-        "./src/**/*"
-    ]
+    "include": ["./src/**/*"]
 }
