@@ -2,31 +2,43 @@
  * @description request.ts
  */
 
+import { isPromise } from 'Lib/help';
+import logger from 'Lib/logger';
+
 interface IRequest {
-    request: object;
+    [key: string]: Function;
 }
+
+interface IRequestConfig {
+    request: IRequest;
+}
+
+interface IoutputRequest {
+    request: IRequest;
+}
+
 /**
  * class Request
  */
 export default class Reuest {
-    private requestConfig: IRequest;
+    private requestConfig: IRequestConfig;
 
-    public requestModel: IRequest;
+    public requestModel: IoutputRequest;
 
-    constructor(request: IRequest) {
+    constructor(request: IRequestConfig) {
         this.requestConfig = request;
 
         this.requestFormat();
     }
 
     private requestFormat(): void {
-        const keyArr: string[] = Object.keys.call(
-            null,
-            this.requestConfig.request,
-        );
-        const outputRequest: object = {};
-        for (const i of keyArr) {
+        const outputRequest: IRequest = {};
+        for (const i in this.requestConfig.request) {
             outputRequest[i] = this.requestConfig.request[i];
         }
+
+        this.requestModel = {
+            request: outputRequest,
+        };
     }
 }

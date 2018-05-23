@@ -1,25 +1,29 @@
 import RequestModel from '../src/index';
 
-const rModel = new RequestModel({
-    state: {},
-    request: {
-        getNameById(params) {
-            // 返回一个Promise
-            // 能不能自动包成一个Promise
-            return new Promise((resolve, reject) => {
+window.onload = () => {
+    const rModel = new RequestModel({
+        state: {},
+        request: {
+            getNameById(params) {
+                // 返回一个Promise
+                // 能不能自动包成一个Promise
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        console.log('xxx');
+                        resolve(1);
+                    }, 2000);
+                });
+            },
+            enums() {
                 setTimeout(() => {
-                    resolve(1);
+                    resolve(2);
                 }, 2000);
-            });
+                // 返回一个Promise
+            },
         },
-        enums() {
-            setTimeout(() => {
-                resolve(2);
-            }, 2000);
-            // 返回一个Promise
-        },
-    },
-});
+    });
+    console.log(rModel);
+};
 
 // 实现requst嵌套 all之类的操作
 
