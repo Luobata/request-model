@@ -4,7 +4,7 @@
     "jsRules": {},
     "rules": {
         "no-implicit-dependencies": false,
-        "no-submodule-imports": [true, "Canvas", "LIB", "FunBox", "INSERT"],
+        "no-submodule-imports": [true, "Canvas", "Lib", "FunBox", "INSERT"],
         "strict-boolean-expressions": [
             true,
             "allow-null-union",

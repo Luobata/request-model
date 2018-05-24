@@ -3,5 +3,7 @@
  */
 
 export default {
-    error() {},
+    error(message?: string): void {
+        console.error(message);
+    },
 };

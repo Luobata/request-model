@@ -23,21 +23,21 @@ window.onload = () => {
         },
     });
     console.log(rModel);
+    // simply request
+    rModel.request.getNameById();
+
+    rModel.request.getNameById().then(
+        (request, data) => {
+            console.log(data);
+        },
+        errData => {
+            console.log(errData);
+        },
+    );
+    rModel.commit('getNameById').commit('enums');
 };
 
 // 实现requst嵌套 all之类的操作
-
-// simply request
-// rModel.request.getNameById();
-//
-// rModel.request.getNameById().then(
-//     (request, data) => {
-//         console.log(data);
-//     },
-//     errData => {
-//         console.log(errData);
-//     },
-// );
 
 // multi request
 // rModel.request

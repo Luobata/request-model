@@ -21,14 +21,22 @@ interface IoutputRequest {
  * class Request
  */
 export default class Reuest {
-    private requestConfig: IRequestConfig;
+    public request: IRequest;
 
-    public requestModel: IoutputRequest;
+    private requestConfig: IRequestConfig;
 
     constructor(request: IRequestConfig) {
         this.requestConfig = request;
 
         this.requestFormat();
+    }
+
+    public commit(key: string): Function {
+        if (!this.request.hasOwnProperty(key)) {
+            logger.error('can not find matched key function');
+        }
+
+        return;
     }
 
     private requestFormat(): void {
@@ -37,8 +45,6 @@ export default class Reuest {
             outputRequest[i] = this.requestConfig.request[i];
         }
 
-        this.requestModel = {
-            request: outputRequest,
-        };
+        this.request = outputRequest;
     }
 }
