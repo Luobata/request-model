@@ -15,25 +15,28 @@ window.onload = () => {
                 });
             },
             enums() {
-                setTimeout(() => {
-                    resolve(2);
-                }, 2000);
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        console.log('enums');
+                        resolve(2);
+                    }, 1000);
+                });
                 // 返回一个Promise
             },
         },
     });
     console.log(rModel);
     // simply request
-    rModel.request.getNameById();
+    // rModel.request.getNameById();
 
-    rModel.request.getNameById().then(
-        (request, data) => {
-            console.log(data);
-        },
-        errData => {
-            console.log(errData);
-        },
-    );
+    // rModel.request.getNameById().then(
+    //     (request, data) => {
+    //         console.log(data);
+    //     },
+    //     errData => {
+    //         console.log(errData);
+    //     },
+    // );
     rModel.commit('getNameById').commit('enums');
 };
 

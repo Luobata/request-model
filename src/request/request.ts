@@ -20,7 +20,7 @@ interface IoutputRequest {
 /**
  * class Request
  */
-export default class Reuest {
+export default class Request {
     public request: IRequest;
 
     private requestConfig: IRequestConfig;
@@ -31,12 +31,15 @@ export default class Reuest {
         this.requestFormat();
     }
 
-    public commit(key: string): Function {
+    public commit(key: string): Request {
         if (!this.request.hasOwnProperty(key)) {
-            logger.error('can not find matched key function');
+            // logger.error('can not find matched key function');
+            throw new Error('can not find matched key function');
         }
 
-        return;
+        this.request[key]();
+
+        return this;
     }
 
     private requestFormat(): void {
