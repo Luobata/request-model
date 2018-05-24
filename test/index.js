@@ -37,7 +37,10 @@ window.onload = () => {
     //         console.log(errData);
     //     },
     // );
-    rModel.commit('getNameById').commit('enums');
+    rModel
+        .commit('getNameById')
+        .commit('enums')
+        .commit('enums');
 };
 
 // 实现requst嵌套 all之类的操作

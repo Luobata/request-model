@@ -24,9 +24,13 @@ export default class Request {
     public request: IRequest;
 
     private requestConfig: IRequestConfig;
+    private deferList: Promise<any>[];
+    private waitList: string[];
 
     constructor(request: IRequestConfig) {
         this.requestConfig = request;
+        this.deferList = [];
+        this.waitList = [];
 
         this.requestFormat();
     }
@@ -37,7 +41,17 @@ export default class Request {
             throw new Error('can not find matched key function');
         }
 
-        this.request[key]();
+        if (this.deferList.length) {
+            this.waitList.push(key);
+            this.deferList[this.deferList.length - 1].then(() => {
+                this.deferList.pop();
+                this.commit(this.waitList.shift());
+                // this.request[key]();
+            });
+        } else {
+            const defer: Promise<any> = this.request[key]();
+            this.deferList.push(defer);
+        }
 
         return this;
     }
