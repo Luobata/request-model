@@ -24,12 +24,11 @@ export default class Request {
     public request: IRequest;
 
     private requestConfig: IRequestConfig;
-    private deferList: Promise<any>[];
+    private deferItem: Promise<any> | null;
     private waitList: string[];
 
     constructor(request: IRequestConfig) {
         this.requestConfig = request;
-        this.deferList = [];
         this.waitList = [];
 
         this.requestFormat();
@@ -37,20 +36,26 @@ export default class Request {
 
     public commit(key: string): Request {
         if (!this.request.hasOwnProperty(key)) {
-            // logger.error('can not find matched key function');
-            throw new Error('can not find matched key function');
+            throw new Error(`can not find matched ${key} function`);
         }
 
-        if (this.deferList.length) {
+        if (this.deferItem) {
             this.waitList.push(key);
-            this.deferList[this.deferList.length - 1].then(() => {
-                this.deferList.pop();
-                this.commit(this.waitList.shift());
-                // this.request[key]();
-            });
         } else {
             const defer: Promise<any> = this.request[key]();
-            this.deferList.push(defer);
+            if (!isPromise(defer)) {
+                throw new Error(
+                    `The ${key} function not return a Promise function`,
+                );
+            }
+            this.deferItem = defer;
+            this.deferItem.then(() => {
+                if (this.waitList.length) {
+                    const keyStr: string = this.waitList.shift();
+                    this.deferItem = null;
+                    this.commit(keyStr);
+                }
+            });
         }
 
         return this;
