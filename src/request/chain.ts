@@ -45,18 +45,25 @@ export default class Chain {
                 );
             }
             this.deferItem = defer;
-            this.deferItem.then((result: any) => {
-                this.resultList.push(result);
-                if (this.waitList.length) {
-                    const keyObj: Idefer = this.waitList.shift();
-                    this.deferItem = null;
-                    this.commit(keyObj.key, ...keyObj.args);
-                } else {
-                    if (this.resolve) {
-                        this.resolve(this.resultList);
+            this.deferItem.then(
+                (result: any) => {
+                    this.resultList.push(result);
+                    if (this.waitList.length) {
+                        const keyObj: Idefer = this.waitList.shift();
+                        this.deferItem = null;
+                        this.commit(keyObj.key, ...keyObj.args);
+                    } else {
+                        if (this.resolve) {
+                            this.resolve(this.resultList);
+                        }
                     }
-                }
-            });
+                },
+                (error: any) => {
+                    if (this.reject) {
+                        this.reject(error);
+                    }
+                },
+            );
         }
 
         return this;
@@ -64,6 +71,12 @@ export default class Chain {
 
     public then(resolve: Function, reject: Function): Chain {
         this.resolve = resolve;
+        this.reject = reject;
+
+        return this;
+    }
+
+    public catch(reject: Function): Chain {
         this.reject = reject;
 
         return this;

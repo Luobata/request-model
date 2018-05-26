@@ -32,6 +32,15 @@ window.onload = () => {
                 });
                 // 返回一个Promise
             },
+            enums3(params) {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        console.log('enums2', params);
+                        reject(3);
+                    }, 2000);
+                });
+                // 返回一个Promise
+            },
         },
     });
     console.log(rModel);
@@ -59,9 +68,12 @@ window.onload = () => {
     rModel
         .chain()
         .commit('getNameById')
+        .commit('enums3')
         .commit('enums')
-        .commit('enums')
-        .commit('enums2');
+        .commit('enums2')
+        .catch(data => {
+            console.log(data);
+        });
 };
 
 // 实现requst嵌套 all之类的操作
