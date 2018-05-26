@@ -51,7 +51,10 @@ window.onload = () => {
         .commit('getNameById', 1)
         .commit('enums', 2, 5)
         .commit('enums', 3)
-        .commit('enums2', 4);
+        .commit('enums2', 4)
+        .then(data => {
+            console.log(data);
+        });
 
     rModel
         .chain()

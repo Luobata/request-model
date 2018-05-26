@@ -13,12 +13,16 @@ interface Idefer {
  * default class Chain
  */
 export default class Chain {
-    Request: Request;
+    private Request: Request;
     private deferItem: Promise<any> | null;
     private waitList: Idefer[];
+    private resultList: any[];
+    private resolve: Function;
+    private reject: Function;
 
     constructor(Request: Request) {
         this.Request = Request;
+        this.resultList = [];
         this.waitList = [];
     }
 
@@ -41,14 +45,26 @@ export default class Chain {
                 );
             }
             this.deferItem = defer;
-            this.deferItem.then(() => {
+            this.deferItem.then((result: any) => {
+                this.resultList.push(result);
                 if (this.waitList.length) {
                     const keyObj: Idefer = this.waitList.shift();
                     this.deferItem = null;
                     this.commit(keyObj.key, ...keyObj.args);
+                } else {
+                    if (this.resolve) {
+                        this.resolve(this.resultList);
+                    }
                 }
             });
         }
+
+        return this;
+    }
+
+    public then(resolve: Function, reject: Function): Chain {
+        this.resolve = resolve;
+        this.reject = reject;
 
         return this;
     }
