@@ -9,24 +9,24 @@ window.onload = () => {
                 // 能不能自动包成一个Promise
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log('xxx');
+                        console.log('xxx', params);
                         resolve(1);
                     }, 2000);
                 });
             },
-            enums() {
+            enums(params, params2) {
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log('enums');
+                        console.log('enums', params, params2);
                         resolve(2);
                     }, 1000);
                 });
                 // 返回一个Promise
             },
-            enums2() {
+            enums2(params) {
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log('enums2');
+                        console.log('enums2', params);
                         resolve(3);
                     }, 2000);
                 });
@@ -48,10 +48,10 @@ window.onload = () => {
     // );
     rModel
         .chain()
-        .commit('getNameById')
-        .commit('enums')
-        .commit('enums')
-        .commit('enums2');
+        .commit('getNameById', 1)
+        .commit('enums', 2, 5)
+        .commit('enums', 3)
+        .commit('enums2', 4);
 
     rModel
         .chain()
