@@ -51,6 +51,12 @@ window.onload = () => {
         .commit('enums')
         .commit('enums')
         .commit('enums2');
+
+    rModel
+        .commit('getNameById')
+        .commit('enums')
+        .commit('enums')
+        .commit('enums2');
 };
 
 // 实现requst嵌套 all之类的操作
