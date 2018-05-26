@@ -47,12 +47,14 @@ window.onload = () => {
     //     },
     // );
     rModel
+        .chain()
         .commit('getNameById')
         .commit('enums')
         .commit('enums')
         .commit('enums2');
 
     rModel
+        .chain()
         .commit('getNameById')
         .commit('enums')
         .commit('enums')
