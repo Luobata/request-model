@@ -60,6 +60,7 @@ export default class Chain {
                 },
                 (error: any) => {
                     if (this.reject) {
+                        this.deferItem = null;
                         this.reject(error);
                     }
                 },
