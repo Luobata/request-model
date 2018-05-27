@@ -55,30 +55,47 @@ window.onload = () => {
     //         console.log(errData);
     //     },
     // );
-    rModel
-        .chain()
-        .commit('getNameById', 1)
-        .commit('enums', 2, 5)
-        .commit('enums', 3)
-        .commit('enums2', 4)
-        .then(
-            data => {
-                console.log(data);
-            },
-            data => {
-                console.log(data);
-            },
-        );
+    const test1 = () => {
+        rModel
+            .chain()
+            .commit('getNameById', 1)
+            .commit('enums', 2, 5)
+            .commit('enums', 3)
+            .commit('enums2', 4)
+            .then(
+                data => {
+                    console.log(data);
+                },
+                data => {
+                    console.log(data);
+                },
+            );
+    };
 
-    rModel
-        .chain()
-        .commit('getNameById')
-        .commit('enums', 'a')
-        .commit('enums')
-        .commit('enums2')
-        .catch(data => {
-            console.log(data);
-        });
+    const test2 = () => {
+        rModel
+            .chain()
+            .commit('getNameById')
+            .commit('enums', 'a')
+            .commit('enums')
+            .commit('enums2')
+            .catch(data => {
+                console.log(data);
+            });
+    };
+
+    const test3 = () => {
+        rModel
+            .chain()
+            .commit('getNameById')
+            .then(data => {
+                console.log(data);
+                return 'abc';
+            })
+            .commit('enums');
+    };
+
+    test3();
 };
 
 // 实现requst嵌套 all之类的操作
