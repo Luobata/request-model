@@ -4,6 +4,7 @@
 
 import logger from 'Lib/logger';
 import Chain from 'Request/chain';
+import { commitToken } from 'Lib/conf';
 
 interface IRequest {
     [key: string]: Function;
@@ -31,8 +32,16 @@ export default class Request {
         this.requestFormat();
     }
 
-    private chain(): Chain {
+    public chain(): Chain {
         return new Chain(this);
+    }
+
+    public commitWrap(key: string, ...args: any[]) {
+        return {
+            [commitToken]: true,
+            key,
+            args: [...args],
+        };
     }
 
     private requestFormat(): void {

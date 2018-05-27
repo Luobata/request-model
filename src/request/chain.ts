@@ -3,6 +3,7 @@
  */
 import { isPromise } from 'Lib/help';
 import Request from 'Request/request';
+import { commitToken } from 'Lib/conf';
 
 interface Idefer {
     key: string;
@@ -109,6 +110,7 @@ export default class Chain {
     private innerResolve(then: Ithen, result: any): Chain {
         const deferItem = then.resolve(result);
         if (isPromise(deferItem)) {
+            // Promise
             deferItem.then(
                 (data: any) => {
                     this.commitChain(data);
@@ -120,6 +122,9 @@ export default class Chain {
                     }
                 },
             );
+        } else if (deferItem[commitToken]) {
+            // another commit
+            this.commit(deferItem.key, ...deferItem.args);
         } else {
             this.commitChain(deferItem);
         }

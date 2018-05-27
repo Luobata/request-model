@@ -95,7 +95,18 @@ window.onload = () => {
             .commit('enums');
     };
 
-    test3();
+    const test4 = () => {
+        rModel
+            .chain()
+            .commit('getNameById')
+            .then(data => {
+                console.log(data);
+                return rModel.commitWrap('enums2', 222);
+            })
+            .commit('enums');
+    };
+
+    test4();
 };
 
 // 实现requst嵌套 all之类的操作
