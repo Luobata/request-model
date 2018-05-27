@@ -58,7 +58,7 @@ window.onload = () => {
     rModel
         .chain()
         .commit('getNameById', 1)
-        .commit('enums3', 2, 5)
+        .commit('enums', 2, 5)
         .commit('enums', 3)
         .commit('enums2', 4)
         .then(
@@ -73,7 +73,7 @@ window.onload = () => {
     rModel
         .chain()
         .commit('getNameById')
-        .commit('enums3')
+        .commit('enums', 'a')
         .commit('enums')
         .commit('enums2')
         .catch(data => {

@@ -51,7 +51,7 @@ export default class Chain {
                     if (this.waitList.length) {
                         const keyObj: Idefer = this.waitList.shift();
                         this.deferItem = null;
-                        this.commit(keyObj.key, ...keyObj.args);
+                        this.commit(keyObj.key, ...keyObj.args, result);
                     } else {
                         if (this.resolve) {
                             this.resolve(this.resultList);
