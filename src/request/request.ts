@@ -2,9 +2,11 @@
  * @description request.ts
  */
 
+import { commitToken } from 'Lib/conf';
 import logger from 'Lib/logger';
 import Chain from 'Request/chain';
-import { commitToken } from 'Lib/conf';
+
+// tslint:disable no-any
 
 interface IRequest {
     [key: string]: Function;
@@ -36,7 +38,7 @@ export default class Request {
         return new Chain(this);
     }
 
-    public commitWrap(key: string, ...args: any[]) {
+    public commitWrap(key: string, ...args: any[]): object {
         return {
             [commitToken]: true,
             key,

@@ -1,9 +1,11 @@
 /**
  * @description chain
  */
+import { commitToken } from 'Lib/conf';
 import { isPromise } from 'Lib/help';
 import Request from 'Request/request';
-import { commitToken } from 'Lib/conf';
+
+// tslint:disable no-any
 
 interface Idefer {
     key: string;
@@ -19,21 +21,22 @@ interface Ithen {
  * default class Chain
  */
 export default class Chain {
-    private Request: Request;
+    private request: Request;
     private deferItem: Promise<any> | null;
-    private waitList: Array<Idefer | Ithen>;
+    // private waitList: Array<Idefer | Ithen>;
+    private waitList: (Idefer | Ithen)[];
     private resultList: any[];
     private resolve: Function;
     private reject: Function;
 
-    constructor(Request: Request) {
-        this.Request = Request;
+    constructor(request: Request) {
+        this.request = request;
         this.resultList = [];
         this.waitList = [];
     }
 
     public commit(key: string, ...args: any[]): Chain {
-        if (!this.Request.request.hasOwnProperty(key)) {
+        if (!this.request.request.hasOwnProperty(key)) {
             throw new Error(`can not find matched ${key} function`);
         }
 
@@ -43,7 +46,7 @@ export default class Chain {
                 args,
             });
         } else {
-            const defer: Promise<any> = this.Request.request[key](...args);
+            const defer: Promise<any> = this.request.request[key](...args);
             if (!isPromise(defer)) {
                 throw new Error(
                     `The ${key} function not return a Promise function`,
@@ -82,22 +85,24 @@ export default class Chain {
         return this;
     }
 
+    // tslint:disable no-reserved-keywords
     public catch(reject: Function): Chain {
         this.reject = reject;
 
         return this;
     }
+    // tslint:enable no-reserved-keywords
 
-    private commitChain(result: any) {
+    private commitChain(result: any): void {
         this.resultList.push(result);
         if (this.waitList.length) {
             const keyObj: Idefer | Ithen = this.waitList.shift();
             this.deferItem = null;
             if ('key' in keyObj) {
-                // Idefer
+                // object Idefer
                 this.commit(keyObj.key, ...keyObj.args, result);
             } else {
-                // Ithen
+                // object Ithen
                 this.innerResolve(keyObj, result);
             }
         } else {
@@ -108,9 +113,9 @@ export default class Chain {
     }
 
     private innerResolve(then: Ithen, result: any): Chain {
-        const deferItem = then.resolve(result);
+        const deferItem: any = then.resolve(result);
         if (isPromise(deferItem)) {
-            // Promise
+            // object Promise
             deferItem.then(
                 (data: any) => {
                     this.commitChain(data);
@@ -128,6 +133,7 @@ export default class Chain {
         } else {
             this.commitChain(deferItem);
         }
+
         return this;
     }
 }
