@@ -2,13 +2,13 @@
  * @description chain
  */
 import { commitToken } from 'Lib/conf';
-import { isPromise } from 'Lib/help';
+import { isArray, isPromise } from 'Lib/help';
 import Request from 'Request/request';
 
 // tslint:disable no-any
 
 interface Idefer {
-    key: string;
+    key: string | string[];
     args: any[];
 }
 
@@ -16,6 +16,25 @@ interface Ithen {
     resolve: Function;
     reject: Function;
 }
+
+const hasRequest: Function = (
+    key: string | string[],
+    request: Request,
+): boolean => {
+    if (isArray(key)) {
+        return (
+            (<string[]>key).filter(
+                (v: string): boolean => !!request.request.hasOwnProperty(v),
+            ).length === (<string[]>key).length
+        );
+    } else {
+        return !!request.request.hasOwnProperty(<string>key);
+    }
+};
+
+const getAll: Function = (key: string[], request: Request): Function[] => {
+    return key.map((v: string): Function => request.request[v]());
+};
 
 /**
  * default class Chain
@@ -35,8 +54,9 @@ export default class Chain {
         this.waitList = [];
     }
 
-    public commit(key: string, ...args: any[]): Chain {
-        if (!this.request.request.hasOwnProperty(key)) {
+    public commit(key: string | string[], ...args: any[]): Chain {
+        // if (!this.request.request.hasOwnProperty(key)) {
+        if (!hasRequest(key, this.request)) {
             throw new Error(`can not find matched ${key} function`);
         }
 
@@ -46,7 +66,12 @@ export default class Chain {
                 args,
             });
         } else {
-            const defer: Promise<any> = this.request.request[key](...args);
+            let defer: Promise<any>;
+            if (isArray(key)) {
+                defer = Promise.all(getAll(key, this.request));
+            } else {
+                defer = this.request.request[<string>key](...args);
+            }
             if (!isPromise(defer)) {
                 throw new Error(
                     `The ${key} function not return a Promise function`,
