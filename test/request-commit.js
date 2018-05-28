@@ -1,6 +1,6 @@
 /* eslint-disable */
 const assert = require('assert');
-const RequestModel = require('../src/index');
+const RequestModel = require('../dist/request-model');
 
 let result;
 

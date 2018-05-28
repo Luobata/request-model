@@ -48,6 +48,7 @@
         "rollup-plugin-uglify": "^2.0.1",
         "rollup-watch": "^2.5.0",
         "shelljs": "^0.8.2",
+        "uglifyjs-webpack-plugin": "^1.2.4",
         "style-loader": "^0.20.1",
         "stylus": "^0.54.5",
         "stylus-loader": "^3.0.1",
