@@ -18,6 +18,7 @@ require('shelljs/global');
 
 var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
+webpackConfig.plugins.pop();
 webpack(webpackConfig, function(err, stats) {
     spinner.stop();
     if (err) throw err;

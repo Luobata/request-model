@@ -16,9 +16,9 @@ module.exports = {
     },
 
     output: {
-        path: root + '/',
+        path: root + '/dist',
         publicPath: '/',
-        filename: 'bundle.js',
+        filename: 'request-model.js',
     },
 
     resolve: {
