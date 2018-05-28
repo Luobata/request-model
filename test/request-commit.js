@@ -11,14 +11,14 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
-                }, 2000);
+                }, 20);
             });
         },
         enums(params, params2) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve([params, params2]);
-                }, 1000);
+                }, 10);
             });
             // 返回一个Promise
         },
@@ -26,7 +26,7 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
-                }, 2000);
+                }, 20);
             });
             // 返回一个Promise
         },
@@ -34,7 +34,7 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     reject(params);
-                }, 2000);
+                }, 20);
             });
             // 返回一个Promise
         },
@@ -42,13 +42,13 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
-                }, 2000);
+                }, 20);
             });
             // 返回一个Promise
         },
     },
 });
-it('basic usage', () => {
+it('basic usage', function(done) {
     rModel
         .chain()
         .commit('getNameById', 1)
@@ -57,5 +57,6 @@ it('basic usage', () => {
         .finish(data => {
             result = data;
             assert.deepEqual(result, [1, [2, 1], 4]);
+            done();
         });
 });
