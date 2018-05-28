@@ -42,7 +42,6 @@ const getAll: Function = (key: string[], request: Request): Function[] => {
 export default class Chain {
     private request: Request;
     private deferItem: Promise<any> | null;
-    // private waitList: Array<Idefer | Ithen>;
     private waitList: (Idefer | Ithen)[];
     private resultList: any[];
     private resolve: Function;
@@ -55,7 +54,6 @@ export default class Chain {
     }
 
     public commit(key: string | string[], ...args: any[]): Chain {
-        // if (!this.request.request.hasOwnProperty(key)) {
         if (!hasRequest(key, this.request)) {
             throw new Error(`can not find matched ${key} function`);
         }
