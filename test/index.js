@@ -1,5 +1,7 @@
 import RequestModel from '../src/index';
 
+/* eslint-disable */
+
 window.onload = () => {
     const rModel = new RequestModel({
         state: {},

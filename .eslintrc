@@ -12,7 +12,6 @@
     },
     "plugins": ["react"],
     "rules": {
-        //"extensions": "always",
         "arrow-parens": ["error", "as-needed"],
         "no-continue": "off",
         "indent": ["error", 4],
