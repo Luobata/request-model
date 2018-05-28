@@ -1,8 +1,6 @@
 /* eslint-disable */
 const assert = require('assert');
-const RequestModel = require('../dist/request-model');
-
-let result;
+const RequestModel = require('../dist/request-model').default;
 
 const rModel = new RequestModel({
     state: {},
@@ -51,14 +49,13 @@ const rModel = new RequestModel({
     },
 });
 it('basic usage', () => {
-    result = rModel
+    rModel
         .chain()
-        .commit('getNameById')
-        .commit('enums')
-        .commit('enums')
-        .commit('enums2')
-        .catch(data => {
-            console.log(data);
+        .commit('getNameById', 1)
+        .commit('enums', 2)
+        .commit('enums2', 4)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, [2, 1], 4]);
         });
-    console.log(result);
 });
