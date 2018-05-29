@@ -60,3 +60,49 @@ it('basic usage', function(done) {
             done();
         });
 });
+it('method then usage with no-promise return', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(data => {
+            return 'abc';
+        })
+        .commit('enums2')
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, 'abc', 'abc']);
+            done();
+        });
+});
+
+it('method then usage with promise return', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(data => {
+            return rModel.commitWrap('enums2', 222);
+        })
+        .commit('enums', 111)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, 222, [111, 222]]);
+            done();
+        });
+});
+
+it('method commit with Array input', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .commit(['enums4', 'enums2'])
+        .commit('enums', 111)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [
+                1,
+                [undefined, undefined],
+                [111, [undefined, undefined]],
+            ]);
+            done();
+        });
+});
