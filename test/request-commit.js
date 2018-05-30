@@ -106,3 +106,24 @@ it('method commit with Array input', function(done) {
             done();
         });
 });
+
+it('method commit with Array input and arguments', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .commit([
+            {
+                handler: 'enums4',
+                args: [4],
+            },
+            {
+                handler: 'enums',
+                args: [1, 2],
+            },
+        ])
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, [4, [1, 2]]]);
+            done();
+        });
+});

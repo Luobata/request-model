@@ -8,32 +8,55 @@ import Request from 'Request/request';
 // tslint:disable no-any
 
 interface Idefer {
-    key: string | string[];
+    key: deferKey;
     args: any[];
 }
+
+type deferKey = string | string[] | IcommitObj[];
+type deferKeyItem = string | IcommitObj;
 
 interface Ithen {
     resolve: Function;
     reject: Function;
 }
 
-const hasRequest: Function = (
-    key: string | string[],
-    request: Request,
-): boolean => {
+interface IcommitObj {
+    handler: string;
+    args: any[];
+}
+
+const isCommitObj: Function = (v: any): boolean => {
+    return 'handler' in v;
+};
+
+const getKey: Function = (v: deferKeyItem): string => {
+    return isCommitObj(v) ? (<IcommitObj>v).handler : <string>v;
+};
+
+const getArgs: Function = (v: deferKeyItem): any[] => {
+    return isCommitObj(v) ? (<IcommitObj>v).args : [];
+};
+
+const hasRequest: Function = (key: deferKey, request: Request): boolean => {
     if (isArray(key)) {
         return (
-            (<string[]>key).filter(
-                (v: string): boolean => !!request.request.hasOwnProperty(v),
-            ).length === (<string[]>key).length
+            (<(string | IcommitObj)[]>key).filter(
+                (v: string | IcommitObj): boolean =>
+                    !!request.request.hasOwnProperty(getKey(v)),
+            ).length === (<(string | IcommitObj)[]>key).length
         );
     } else {
         return !!request.request.hasOwnProperty(<string>key);
     }
 };
 
-const getAll: Function = (key: string[], request: Request): Function[] => {
-    return key.map((v: string): Function => request.request[v]());
+const getAll: Function = (
+    key: (string | IcommitObj)[],
+    request: Request,
+): Function[] => {
+    return key.map((v: string | IcommitObj): Function =>
+        request.request[getKey(v)](...getArgs(v)),
+    );
 };
 
 /**
@@ -53,7 +76,7 @@ export default class Chain {
         this.waitList = [];
     }
 
-    public commit(key: string | string[], ...args: any[]): Chain {
+    public commit(key: deferKey, ...args: any[]): Chain {
         if (!hasRequest(key, this.request)) {
             throw new Error(`can not find matched ${key} function`);
         }

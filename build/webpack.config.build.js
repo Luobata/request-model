@@ -5,7 +5,7 @@ var path = require('path');
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 var root = path.resolve(__dirname, '../').replace(/\\/g, '/') + '/';
-var assetsRoot = root + 'dist/';
+var assetsRoot = path.resolve(root, 'dist');
 var assetsSubDirectory = 'static/';
 var productionSourceMap = true;
 var productionGzip = false;

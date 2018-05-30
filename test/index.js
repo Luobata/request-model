@@ -127,13 +127,18 @@ window.onload = () => {
     const test6 = () => {
         rModel
             .chain()
-            .commit('getNameById', 1)
-            .commit('enums', 2)
-            .commit('enums', 3)
-            .commit('enums2', 4)
-            .finish(data => {
-                console.log(data);
-            });
+            .commit('getNameById')
+            .commit([
+                {
+                    handler: 'enums4',
+                    args: [4],
+                },
+                {
+                    handler: 'enums',
+                    args: [1, 2],
+                },
+            ])
+            .commit('enums');
     };
 
     test6();
