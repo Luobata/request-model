@@ -53,9 +53,10 @@ const hasRequest: Function = (key: deferKey, request: Request): boolean => {
 const getAll: Function = (
     key: (string | IcommitObj)[],
     request: Request,
+    args: any[],
 ): Function[] => {
     return key.map((v: string | IcommitObj): Function =>
-        request.request[getKey(v)](...getArgs(v)),
+        request.request[getKey(v)](...getArgs(v), ...args),
     );
 };
 
@@ -89,7 +90,7 @@ export default class Chain {
         } else {
             let defer: Promise<any>;
             if (isArray(key)) {
-                defer = Promise.all(getAll(key, this.request));
+                defer = Promise.all(getAll(key, this.request, [...args]));
             } else {
                 defer = this.request.request[<string>key](...args);
             }

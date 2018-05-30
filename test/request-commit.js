@@ -98,11 +98,7 @@ it('method commit with Array input', function(done) {
         .commit('enums', 111)
         .finish(data => {
             result = data;
-            assert.deepEqual(result, [
-                1,
-                [undefined, undefined],
-                [111, [undefined, undefined]],
-            ]);
+            assert.deepEqual(result, [1, [1, 1], [111, [1, 1]]]);
             done();
         });
 });
@@ -118,12 +114,12 @@ it('method commit with Array input and arguments', function(done) {
             },
             {
                 handler: 'enums',
-                args: [1, 2],
+                args: [2],
             },
         ])
         .finish(data => {
             result = data;
-            assert.deepEqual(result, [1, [4, [1, 2]]]);
+            assert.deepEqual(result, [1, [4, [2, 1]]]);
             done();
         });
 });

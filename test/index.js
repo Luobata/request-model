@@ -135,13 +135,13 @@ window.onload = () => {
                 },
                 {
                     handler: 'enums',
-                    args: [1, 2],
+                    args: [2],
                 },
             ])
             .commit('enums');
     };
 
-    test5();
+    test6();
 };
 
 // 实现requst嵌套 all之类的操作
