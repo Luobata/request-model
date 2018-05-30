@@ -141,7 +141,7 @@ window.onload = () => {
             .commit('enums');
     };
 
-    test6();
+    test5();
 };
 
 // 实现requst嵌套 all之类的操作

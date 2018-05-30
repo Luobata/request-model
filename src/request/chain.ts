@@ -2,7 +2,7 @@
  * @description chain
  */
 import { commitToken } from 'Lib/conf';
-import { isArray, isPromise } from 'Lib/help';
+import { isArray, isObject, isPromise } from 'Lib/help';
 import Request from 'Request/request';
 
 // tslint:disable no-any
@@ -26,7 +26,7 @@ interface IcommitObj {
 }
 
 const isCommitObj: Function = (v: any): boolean => {
-    return 'handler' in v;
+    return isObject(v) ? 'handler' in v : false;
 };
 
 const getKey: Function = (v: deferKeyItem): string => {
