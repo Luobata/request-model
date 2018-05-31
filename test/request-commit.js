@@ -15,14 +15,14 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
-                }, 20);
+                }, 0);
             });
         },
         enums(params, params2) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve([params, params2]);
-                }, 10);
+                }, 0);
             });
             // 返回一个Promise
         },
@@ -30,7 +30,7 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
-                }, 20);
+                }, 0);
             });
             // 返回一个Promise
         },
@@ -38,7 +38,7 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     reject(params);
-                }, 20);
+                }, 0);
             });
             // 返回一个Promise
         },
@@ -46,13 +46,28 @@ const rModel = new RequestModel({
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
-                }, 20);
+                }, 0);
             });
             // 返回一个Promise
         },
     },
 });
 it('basic usage', function(done) {
+    rModel.request
+        .getNameById(1)
+        .then(data => {
+            return rModel.request.enums(2, data);
+        })
+        .then(data => {
+            return rModel.request.enums2(4, data);
+        })
+        .then(data => {
+            result = data;
+            assert.deepEqual(result, 4);
+            done();
+        });
+});
+it('chain usage', function(done) {
     rModel
         .chain()
         .commit('getNameById', 1)
