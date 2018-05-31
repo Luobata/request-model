@@ -1,9 +1,13 @@
 /* eslint-disable */
 const assert = require('assert');
 const RequestModel = require('../dist/request-model').default;
+const clue = require('./test-model/clue');
 
 const rModel = new RequestModel({
     state: {},
+    modules: {
+        clue,
+    },
     request: {
         getNameById(params) {
             // 返回一个Promise
@@ -120,6 +124,18 @@ it('method commit with Array input and arguments', function(done) {
         .finish(data => {
             result = data;
             assert.deepEqual(result, [1, [4, [2, 1]]]);
+            done();
+        });
+});
+
+it('method commit with moodule', function(done) {
+    rModel
+        .chain()
+        .commit('clue/getClueList', 33)
+        .commit('clue/getClueEnums', 22)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [33, 22]);
             done();
         });
 });

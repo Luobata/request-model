@@ -9,7 +9,7 @@ const clue = {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     console.log('getClueList', params);
-                    resolve(1);
+                    resolve(params);
                 }, 0);
             });
         },
@@ -17,7 +17,7 @@ const clue = {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     console.log('getClueEnums', params, params2);
-                    resolve(2);
+                    resolve(params);
                 }, 0);
             });
             // 返回一个Promise
@@ -25,4 +25,5 @@ const clue = {
     },
 };
 
-export default clue;
+module.exports = clue;
+// export default clue;
