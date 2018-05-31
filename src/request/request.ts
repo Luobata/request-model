@@ -61,21 +61,10 @@ export default class Request {
             null,
             this.requestConfig.modules,
         );
+
         for (const i of requestKes) {
             outputRequest[i] = this.requestConfig.request[i];
         }
-        // for (const i in this.requestConfig.request) {
-        //     outputRequest[i] = this.requestConfig.request[i];
-        // }
-
-        // for (const i in this.requestConfig.modules) {
-        //     const tmpRequest: IRequest = {};
-        //     for (const j in this.requestConfig.modules[i].request) {
-        //         tmpRequest[j] = (<IRequest>this.requestConfig.modules[i]
-        //             .request)[j];
-        //     }
-        //     outputRequest[i] = tmpRequest;
-        // }
 
         for (const i of modulesKeys) {
             const tmpRequest: IRequest = {};
