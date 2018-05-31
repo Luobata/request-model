@@ -8,7 +8,6 @@ const clue = {
             // 能不能自动包成一个Promise
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    console.log('getClueList', params);
                     resolve(params);
                 }, 0);
             });
@@ -16,7 +15,6 @@ const clue = {
         getClueEnums(params, params2) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    console.log('getClueEnums', params, params2);
                     resolve(params);
                 }, 0);
             });

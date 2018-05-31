@@ -43,13 +43,11 @@ const hasRequest: Function = (key: deferKey, request: Request): boolean => {
         return (
             (<(string | IcommitObj)[]>key).filter(
                 (v: string | IcommitObj): boolean =>
-                    // !!request.request.hasOwnProperty(getKey(v)),
                     !!getFunctionInRequest(getKey(v), request),
             ).length === (<(string | IcommitObj)[]>key).length
         );
     } else {
         return !!getFunctionInRequest(<string>key, request);
-        // return !!request.request.hasOwnProperty(<string>key);
     }
 };
 

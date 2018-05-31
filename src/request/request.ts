@@ -53,13 +53,37 @@ export default class Request {
 
     private requestFormat(): void {
         const outputRequest: IRequest = {};
-        for (const i in this.requestConfig.request) {
+        const requestKes: string[] = Object.keys.call(
+            null,
+            this.requestConfig.request,
+        );
+        const modulesKeys: string[] = Object.keys.call(
+            null,
+            this.requestConfig.modules,
+        );
+        for (const i of requestKes) {
             outputRequest[i] = this.requestConfig.request[i];
         }
+        // for (const i in this.requestConfig.request) {
+        //     outputRequest[i] = this.requestConfig.request[i];
+        // }
 
-        for (const i in this.requestConfig.modules) {
+        // for (const i in this.requestConfig.modules) {
+        //     const tmpRequest: IRequest = {};
+        //     for (const j in this.requestConfig.modules[i].request) {
+        //         tmpRequest[j] = (<IRequest>this.requestConfig.modules[i]
+        //             .request)[j];
+        //     }
+        //     outputRequest[i] = tmpRequest;
+        // }
+
+        for (const i of modulesKeys) {
             const tmpRequest: IRequest = {};
-            for (const j in this.requestConfig.modules[i].request) {
+            const tmpKeys: string[] = Object.keys.call(
+                null,
+                this.requestConfig.modules[i].request,
+            );
+            for (const j of tmpKeys) {
                 tmpRequest[j] = (<IRequest>this.requestConfig.modules[i]
                     .request)[j];
             }
