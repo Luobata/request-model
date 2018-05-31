@@ -1,10 +1,14 @@
 import RequestModel from '../src/index';
+import clue from './test-model/clue';
 
 /* eslint-disable */
 
 window.onload = () => {
     const rModel = new RequestModel({
         state: {},
+        modules: {
+            clue,
+        },
         request: {
             getNameById(params) {
                 // 返回一个Promise
@@ -140,8 +144,14 @@ window.onload = () => {
             ])
             .commit('enums');
     };
+    const test7 = () => {
+        rModel
+            .chain()
+            .commit('clue/getClueList', 33)
+            .commit('clue/getClueEnums', 22);
+    };
 
-    test6();
+    test7();
 };
 
 // 实现requst嵌套 all之类的操作

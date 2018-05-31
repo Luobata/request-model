@@ -3,6 +3,7 @@
  */
 import { commitToken } from 'Lib/conf';
 import { isArray, isObject, isPromise } from 'Lib/help';
+import { getFunctionInRequest } from 'Request/data';
 import Request from 'Request/request';
 
 // tslint:disable no-any
@@ -42,11 +43,13 @@ const hasRequest: Function = (key: deferKey, request: Request): boolean => {
         return (
             (<(string | IcommitObj)[]>key).filter(
                 (v: string | IcommitObj): boolean =>
-                    !!request.request.hasOwnProperty(getKey(v)),
+                    // !!request.request.hasOwnProperty(getKey(v)),
+                    !!getFunctionInRequest(getKey(v), request),
             ).length === (<(string | IcommitObj)[]>key).length
         );
     } else {
-        return !!request.request.hasOwnProperty(<string>key);
+        return !!getFunctionInRequest(<string>key, request);
+        // return !!request.request.hasOwnProperty(<string>key);
     }
 };
 
@@ -56,7 +59,8 @@ const getAll: Function = (
     args: any[],
 ): Function[] => {
     return key.map((v: string | IcommitObj): Function =>
-        request.request[getKey(v)](...getArgs(v), ...args),
+        // request.request[getKey(v)](...getArgs(v), ...args),
+        getFunctionInRequest(getKey(v), request)(...getArgs(v), ...args),
     );
 };
 
@@ -92,7 +96,10 @@ export default class Chain {
             if (isArray(key)) {
                 defer = Promise.all(getAll(key, this.request, [...args]));
             } else {
-                defer = this.request.request[<string>key](...args);
+                // defer = this.request.request[<string>key](...args);
+                defer = getFunctionInRequest(<string>key, this.request)(
+                    ...args,
+                );
             }
             if (!isPromise(defer)) {
                 throw new Error(
