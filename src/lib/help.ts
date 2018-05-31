@@ -2,7 +2,7 @@
  * @description help
  */
 
-// tslint:disable no-any
+// tslint:disable no-any no-unsafe-any
 
 export const isArray: Function = (obj: any): boolean => {
     return Object.prototype.toString.call(obj) === '[object Array]';

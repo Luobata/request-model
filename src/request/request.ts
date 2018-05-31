@@ -6,7 +6,7 @@ import { commitToken } from 'Lib/conf';
 import logger from 'Lib/logger';
 import Chain from 'Request/chain';
 
-// tslint:disable no-any
+// tslint:disable no-any no-unsafe-any
 
 export interface IRequest {
     [key: string]: Function | IRequest;

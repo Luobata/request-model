@@ -14,7 +14,7 @@ export const getFunctionInRequest: Function = (
         const keys: string[] = key.split('/');
         keys.map((v: string): void => {
             if (!(iRequest instanceof Function)) {
-                iRequest = (<IRequest>iRequest)[v];
+                iRequest = iRequest[v];
             }
         });
     } else {

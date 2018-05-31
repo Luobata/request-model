@@ -6,7 +6,7 @@ import { isArray, isObject, isPromise } from 'Lib/help';
 import { getFunctionInRequest } from 'Request/data';
 import Request from 'Request/request';
 
-// tslint:disable no-any
+// tslint:disable no-any no-unsafe-any
 
 interface Idefer {
     key: deferKey;
