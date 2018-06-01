@@ -98,6 +98,7 @@ generator after requestModel.chain()
   return ```Chain```
 
 - then
+
   join your commit chain with another Function.
 
   params ```(resolve: Function, ?reject: Function)```
@@ -105,13 +106,15 @@ generator after requestModel.chain()
   return ```Chain```
 
 - finish
+
   add a finish Function will resolve after all the commit.
 
   params ```(resolve: Function, ?reject: Function)```
 
   return ```Chain```
 
-- Catch
+- catch
+
   add a error catch Functin.
 
   params ```(reject: Function)```
