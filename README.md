@@ -96,6 +96,7 @@ generator after requestModel.chain()
 - commit
 
   params ```key: string```
+  
   return ```Chain```
 
 - then
