@@ -41,3 +41,17 @@ rModel
 ```
 
 ## API
+
+*   Constructor
+
+```js
+import requestModel from 'request-model';
+
+const rModel = new RequestModel({
+    ...options,
+});
+```
+
+\*\* Construction options
+
+** request \*** type: `{ [type: string]: Function }`
