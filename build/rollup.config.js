@@ -6,44 +6,35 @@ import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import path from 'path';
 import flow from 'rollup-plugin-flow';
-import serve from 'rollup-plugin-serve';
-import livereload from 'rollup-plugin-livereload';
 
 const root = path.resolve(__dirname, './');
 const port = 10002;
 
 module.exports = {
-    input: 'src/index.js',
-    name: 'projectName',
+    input: 'src/index.ts',
     sourcemap: true,
     output: {
-        file: 'dist/bundle.js',
-        format: 'umd'
+        file: 'dist/request-model.esm.js',
+        format: 'es',
+        name: 'request-model',
+        sourcemap: true,
     },
     plugins: [
         // uglify(),
-        serve({
-            open: true,
-            contentBase: '',
-            port: port
-        }),
-        // livereload(),
         resolve(),
-        flow(
-            {
-                all: true
-            }
-        ),
+        flow({
+            all: true,
+        }),
         commonjs(),
         babel({
             exclude: 'node_modules/**',
-            presets: [ 
-                [ 'es2015', { "modules": false } ]
-            ],
+            presets: [['es2015', { modules: false }]],
         }),
         alias({
-            ASSETS: path.resolve(__dirname, '../assets')
-        })
-    ]
-// output format - 'amd', 'cjs', 'es6', 'iife', 'umd'
+            Request: path.resolve(__dirname, '../src/request'),
+            Lib: path.resolve(__dirname, '../src/lib'),
+            ASSETS: path.resolve(__dirname, '../asserts'),
+        }),
+    ],
+    // output format - 'amd', 'cjs', 'es6', 'iife', 'umd'
 };
