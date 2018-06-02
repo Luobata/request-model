@@ -5,13 +5,13 @@ import alias from 'rollup-plugin-alias';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import path from 'path';
-import flow from 'rollup-plugin-flow';
+import typescript from 'rollup-plugin-typescript2';
 
 const root = path.resolve(__dirname, './');
 const port = 10002;
 
 module.exports = {
-    input: 'src/index.ts',
+    input: 'src/request/request.ts',
     sourcemap: true,
     output: {
         file: 'dist/request-model.esm.js',
@@ -22,13 +22,11 @@ module.exports = {
     plugins: [
         // uglify(),
         resolve(),
-        flow({
-            all: true,
-        }),
+        typescript(),
         commonjs(),
         babel({
             exclude: 'node_modules/**',
-            presets: [['es2015', { modules: false }]],
+            presets: [['env', { modules: false }]],
         }),
         alias({
             Request: path.resolve(__dirname, '../src/request'),
