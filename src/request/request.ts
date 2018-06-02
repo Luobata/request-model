@@ -16,7 +16,7 @@ interface IModule {
     [key: string]: IRequest;
 }
 
-interface IRequestConfig {
+export interface IRequestConfig {
     request: IRequest;
     modules?: IModule;
 }
@@ -24,6 +24,12 @@ interface IRequestConfig {
 interface IoutputRequest {
     request: IRequest;
 }
+
+// export interface IcommitWrap {
+//     [commitToken]: boolean;
+//     key: string;
+//     args: any[];
+// }
 
 /**
  * class Request
