@@ -150,7 +150,10 @@ window.onload = () => {
         rModel
             .chain()
             .commit('clue/getClueList', 33)
-            .commit('clue/getClueEnums', 22);
+            .commit('clue/getClueEnums', 22)
+            .finish(data => {
+                console.log(data);
+            });
     };
 
     const test8 = () => {
@@ -160,7 +163,7 @@ window.onload = () => {
             .commit('wrap/getClueEnums', 22);
     };
 
-    test8();
+    test7();
 };
 
 // 实现requst嵌套 all之类的操作

@@ -100,7 +100,7 @@ export default class Request {
                 this.requestConfig.modules[i].request || {},
             );
             for (const j of tmpKeys) {
-                if (this.setting.config.promiseWrap) {
+                if (this.setting.modules[i].promiseWrap) {
                     tmpRequest[j] = (...args: any[]): Promise<any> => {
                         return new Promise(
                             (resolve: Function, reject: Function): any => {
@@ -144,7 +144,7 @@ export default class Request {
         });
 
         for (const i of modulesKeys) {
-            tmpConfig.modules[i] = tmpConfig.config;
+            tmpConfig.modules[i] = { ...tmpConfig.config };
             const tmpKeys: string[] = Object.keys.call(
                 null,
                 this.requestConfig.modules[i].config || {},
