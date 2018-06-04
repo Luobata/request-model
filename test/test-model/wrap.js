@@ -4,8 +4,7 @@ const wrap = {
     state: {},
     request: {
         getClueList(resolve, reject, params) {
-            // 返回一个Promise
-            // 能不能自动包成一个Promise
+            // 能自动包成一个Promise
             setTimeout(() => {
                 resolve(params);
             }, 0);

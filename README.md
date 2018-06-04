@@ -60,7 +60,13 @@ const rModel = new RequestModel({
 
 type `{ [type: string]: Function }`
 
-**module**: sub modules to request-model
+**config**: config for requestModel, the sub module config will extends its parent config.
+
+| Key         | default | Description                              |
+| ----------- | ------- | ---------------------------------------- |
+| promiseWrap | false   | Wrap your request fucntion with Promise. |
+
+**module**: sub modules to request-model(only one hierarchy is supported now)
 
 type ``` [type: string]: another request-model options like```
 
@@ -96,7 +102,7 @@ generator after requestModel.chain()
 - commit
 
   params ```key: string```
-  
+
   return ```Chain```
 
 - then
