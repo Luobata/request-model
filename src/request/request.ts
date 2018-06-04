@@ -48,6 +48,21 @@ const defaultConfig: IConfig = {
 //     args: any[];
 // }
 
+const formatFunctionToPromise: Function = (
+    flag: boolean,
+    fn: Function,
+): Function => {
+    if (flag) {
+        return (...args: any[]): Promise<any> => {
+            return new Promise((resolve: Function, reject: Function): any => {
+                fn.call(null, resolve, reject, ...args);
+            });
+        };
+    } else {
+        return fn;
+    }
+};
+
 /**
  * class Request
  */
@@ -88,36 +103,25 @@ export default class Request {
         );
 
         for (const i of requestKes) {
-            // format
-            outputRequest[i] = this.requestConfig.request[i];
+            outputRequest[i] = formatFunctionToPromise(
+                this.setting.config.promiseWrap,
+                this.requestConfig.request[i],
+            );
         }
 
         for (const i of modulesKeys) {
-            // format
             const tmpRequest: IRequest = {};
             const tmpKeys: string[] = Object.keys.call(
                 null,
                 this.requestConfig.modules[i].request || {},
             );
             for (const j of tmpKeys) {
-                if (this.setting.modules[i].promiseWrap) {
-                    tmpRequest[j] = (...args: any[]): Promise<any> => {
-                        return new Promise(
-                            (resolve: Function, reject: Function): any => {
-                                (<Function>(<IRequest>this.requestConfig
-                                    .modules[i].request)[j]).call(
-                                    null,
-                                    resolve,
-                                    reject,
-                                    ...args,
-                                );
-                            },
-                        );
-                    };
-                } else {
-                    tmpRequest[j] = (<IRequest>this.requestConfig.modules[i]
-                        .request)[j];
-                }
+                tmpRequest[j] = formatFunctionToPromise(
+                    this.setting.modules[i].promiseWrap,
+                    <Function>(<IRequest>this.requestConfig.modules[i].request)[
+                        j
+                    ],
+                );
             }
             outputRequest[i] = tmpRequest;
         }
