@@ -64,7 +64,7 @@ type `{ [type: string]: Function }`
 
 | key         | type    | default | description                              |
 | :---------- | :------ | :------ | :--------------------------------------- |
-| promiseWrap | Boolean | false   | Wrap your request fucntion with Promise. |
+| promiseWrap | boolean | false   | Wrap your request fucntion with Promise. |
 
 **module**: sub modules to request-model(only one hierarchy is supported now)
 
