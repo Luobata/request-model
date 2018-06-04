@@ -1,5 +1,6 @@
 import RequestModel from '../src/index';
 import clue from './test-model/clue';
+import wrap from './test-model/wrap';
 
 /* eslint-disable */
 
@@ -8,6 +9,7 @@ window.onload = () => {
         state: {},
         modules: {
             clue,
+            wrap,
         },
         request: {
             getNameById(params) {
@@ -151,7 +153,14 @@ window.onload = () => {
             .commit('clue/getClueEnums', 22);
     };
 
-    test7();
+    const test8 = () => {
+        rModel
+            .chain()
+            .commit('wrap/getClueList', 33)
+            .commit('wrap/getClueEnums', 22);
+    };
+
+    test8();
 };
 
 // 实现requst嵌套 all之类的操作

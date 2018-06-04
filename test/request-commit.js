@@ -2,11 +2,13 @@
 const assert = require('assert');
 const RequestModel = require('../dist/request-model').default;
 const clue = require('./test-model/clue');
+const wrap = require('./test-model/wrap');
 
 const rModel = new RequestModel({
     state: {},
     modules: {
         clue,
+        wrap,
     },
     request: {
         getNameById(params) {
