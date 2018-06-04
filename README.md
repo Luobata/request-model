@@ -62,8 +62,8 @@ type `{ [type: string]: Function }`
 
 **config**: config for requestModel, the sub module config will extends its parent config.
 
-| Key         | default | Description                              |
-| ----------- | ------- | ---------------------------------------- |
+| key         | default | description                              |
+| :---------- | :------ | :--------------------------------------- |
 | promiseWrap | false   | Wrap your request fucntion with Promise. |
 
 **module**: sub modules to request-model(only one hierarchy is supported now)
