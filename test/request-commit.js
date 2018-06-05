@@ -70,6 +70,24 @@ it('method commit with Array input', function(done) {
         });
 });
 
+it('method commit with commit-wrap in Array input', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(data => {
+            return rModel.commitAll([
+                rModel.commitWrap('enums2', 2),
+                rModel.commitWrap('enums4', 4),
+            ]);
+        })
+        .commit('enums', 111)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, [2, 4], [111, [2, 4]]]);
+            done();
+        });
+});
+
 it('method commit with Array input and arguments', function(done) {
     rModel
         .chain()

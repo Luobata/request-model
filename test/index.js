@@ -17,26 +17,23 @@ window.onload = () => {
                 // 能不能自动包成一个Promise
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log('xxx', params);
-                        resolve(1);
-                    }, 2000);
+                        resolve(params);
+                    }, 0);
                 });
             },
             enums(params, params2) {
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log('enums', params, params2);
-                        resolve(2);
-                    }, 1000);
+                        resolve([params, params2]);
+                    }, 0);
                 });
                 // 返回一个Promise
             },
             enums2(params) {
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        console.log('enums2', params);
-                        resolve(3);
-                    }, 2000);
+                        resolve(params);
+                    }, 0);
                 });
                 // 返回一个Promise
             },
@@ -53,7 +50,7 @@ window.onload = () => {
                 return new Promise((resolve, reject) => {
                     setTimeout(() => {
                         console.log('enums4', params);
-                        resolve(3);
+                        resolve(params);
                     }, 2000);
                 });
                 // 返回一个Promise
@@ -176,7 +173,23 @@ window.onload = () => {
             .action(3, 4);
     };
 
-    test7();
+    const test10 = () => {
+        rModel
+            .chain()
+            .commit('getNameById', 1)
+            .then(data => {
+                return rModel.commitAll([
+                    rModel.commitWrap('enums', 2, 3),
+                    rModel.commitWrap('enums4', 4),
+                ]);
+            })
+            .commit('enums', 111)
+            .finish(data => {
+                console.log(data);
+            });
+    };
+
+    test10();
 };
 
 // 实现requst嵌套 all之类的操作
