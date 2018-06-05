@@ -150,7 +150,7 @@ export default class Chain {
     // tslint:enable no-reserved-keywords
 
     public action(key: string, ...args: any[]): Chain {
-        return this.actionFun[key].call(this, ...args);
+        return this.actionFun[key].call(null, this, ...args);
     }
 
     private commitChain(result: any): void {
