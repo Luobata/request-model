@@ -91,6 +91,21 @@ it('method commit with then infront of any commit', function(done) {
             done();
         });
 });
+it('method commit with finish after then without any commit', function(done) {
+    rModel
+        .chain()
+        .then(data => {
+            return rModel.commitAll([
+                rModel.commitWrap('enums2', 2),
+                rModel.commitWrap('enums4', 4),
+            ]);
+        })
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [[2, 4]]);
+            done();
+        });
+});
 
 it('method commit with Array input', function(done) {
     rModel
