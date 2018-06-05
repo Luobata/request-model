@@ -16,7 +16,7 @@ interface IModule {
     [key: string]: IRequestConfig;
 }
 
-interface IAction {
+export interface IAction {
     [key: string]: Function;
 }
 
@@ -76,16 +76,18 @@ export default class Request {
 
     private requestConfig: IRequestConfig;
     private setting: IrequestConfig;
+    private action: IAction;
 
     constructor(request: IRequestConfig) {
         this.requestConfig = request;
 
         this.setting = this.getRequestConfig();
+        this.action = this.requestConfig.action;
         this.requestFormat();
     }
 
     public chain(): Chain {
-        return new Chain(this);
+        return new Chain(this, this.action);
     }
 
     public commitWrap(key: string, ...args: any[]): object {

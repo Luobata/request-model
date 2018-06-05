@@ -4,7 +4,7 @@
 import { commitToken } from 'Lib/conf';
 import { isArray, isObject, isPromise } from 'Lib/help';
 import { getFunctionInRequest } from 'Request/data';
-import Request from 'Request/request';
+import Request, { IAction } from 'Request/request';
 
 // tslint:disable no-any no-unsafe-any
 
@@ -66,16 +66,18 @@ const getAll: Function = (
  */
 export default class Chain {
     private request: Request;
+    private actionFun: IAction;
     private deferItem: Promise<any> | null;
     private waitList: (Idefer | Ithen)[];
     private resultList: any[];
     private resolve: Function;
     private reject: Function;
 
-    constructor(request: Request) {
+    constructor(request: Request, action: IAction) {
         this.request = request;
         this.resultList = [];
         this.waitList = [];
+        this.actionFun = action;
     }
 
     public commit(key: deferKey, ...args: any[]): Chain {
@@ -143,7 +145,7 @@ export default class Chain {
     }
 
     public action(key: string, ...args: any[]): Chain {
-        return this.request.requestConfig.action[key].call(this, ...args);
+        return this.actionFun[key].call(this, ...args);
     }
     // tslint:enable no-reserved-keywords
 
