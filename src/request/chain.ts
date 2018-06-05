@@ -4,7 +4,7 @@
 import { commitToken } from 'Lib/conf';
 import { isArray, isObject, isPromise } from 'Lib/help';
 import { getFunctionInRequest } from 'Request/data';
-import Request, { IAction } from 'Request/request';
+import { IAction, IRequest, IcommitWrap } from 'Request/request';
 
 // tslint:disable no-any no-unsafe-any
 
@@ -38,7 +38,7 @@ const getArgs: Function = (v: deferKeyItem): any[] => {
     return isCommitObj(v) ? (<IcommitObj>v).args : [];
 };
 
-const hasRequest: Function = (key: deferKey, request: Request): boolean => {
+const hasRequest: Function = (key: deferKey, request: IRequest): boolean => {
     if (isArray(key)) {
         return (
             (<(string | IcommitObj)[]>key).filter(
@@ -53,7 +53,7 @@ const hasRequest: Function = (key: deferKey, request: Request): boolean => {
 
 const getAll: Function = (
     key: (string | IcommitObj)[],
-    request: Request,
+    request: IRequest,
     args: any[],
 ): Function[] => {
     return key.map((v: string | IcommitObj): Function =>
@@ -65,7 +65,7 @@ const getAll: Function = (
  * default class Chain
  */
 export default class Chain {
-    private request: Request;
+    private request: IRequest;
     private actionFun: IAction;
     private deferItem: Promise<any> | null;
     private waitList: (Idefer | Ithen)[];
@@ -73,7 +73,7 @@ export default class Chain {
     private resolve: Function;
     private reject: Function;
 
-    constructor(request: Request, action: IAction) {
+    constructor(request: IRequest, action: IAction) {
         this.request = request;
         this.resultList = [];
         this.waitList = [];
@@ -143,11 +143,11 @@ export default class Chain {
 
         return this;
     }
+    // tslint:enable no-reserved-keywords
 
     public action(key: string, ...args: any[]): Chain {
         return this.actionFun[key].call(this, ...args);
     }
-    // tslint:enable no-reserved-keywords
 
     private commitChain(result: any): void {
         this.resultList.push(result);
@@ -182,6 +182,15 @@ export default class Chain {
                     }
                 },
             );
+        } else if (isArray(deferItem)) {
+            // 暂时可以认为一定是 commitAll 包装
+            const item: IcommitObj[] = deferItem.map((v: IcommitWrap) => {
+                return {
+                    handler: v.key,
+                    args: v.args,
+                };
+            });
+            this.commit(item);
         } else if (deferItem[commitToken]) {
             // another commit
             this.commit(deferItem.key, ...deferItem.args);

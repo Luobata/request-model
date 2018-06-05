@@ -1,15 +1,15 @@
 /**
  * @description help to find data in Request
  */
-import Request, { IRequest } from 'Request/request';
+import { IRequest } from 'Request/request';
 
 type Iresult = Function | undefined;
 
 export const getFunctionInRequest: Function = (
     key: string,
-    request: Request,
+    request: IRequest,
 ): Iresult => {
-    let iRequest: IRequest | Function = request.request;
+    let iRequest: IRequest | Function = request;
     if (key.indexOf('/') !== -1) {
         const keys: string[] = key.split('/');
         keys.map((v: string): void => {

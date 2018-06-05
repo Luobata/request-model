@@ -25,6 +25,11 @@ interface IConfig {
     [key: string]: boolean;
 }
 
+export interface IcommitWrap {
+    key: string;
+    args: any[];
+}
+
 export interface IRequestConfig {
     request: IRequest;
     modules?: IModule;
@@ -87,7 +92,7 @@ export default class Request {
     }
 
     public chain(): Chain {
-        return new Chain(this, this.action);
+        return new Chain(this.request, this.action);
     }
 
     public commitWrap(key: string, ...args: any[]): object {
@@ -96,6 +101,16 @@ export default class Request {
             key,
             args: [...args],
         };
+    }
+
+    public commitAll(commitWrap: IcommitWrap[]): object[] {
+        return commitWrap.map((v: IcommitWrap): object => {
+            return {
+                [commitToken]: true,
+                key: v.key,
+                args: [...v.args],
+            };
+        });
     }
 
     private requestFormat(): void {
