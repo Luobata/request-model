@@ -56,7 +56,7 @@ const rModel = new RequestModel({
 
 ##### Construction options
 
-**request**:
+*   **request**:
 
 type `{ [type: string]: Function }`
 
@@ -66,7 +66,7 @@ type `{ [type: string]: Function }`
 | :---------- | :------ | :------ | :--------------------------------------- |
 | promiseWrap | boolean | false   | Wrap your request fucntion with Promise. |
 
-**module**: sub modules to request-model(only one hierarchy is supported now)
+*   **module**: sub modules to request-model(only one hierarchy is supported now)
 
 type `[type: string]: another request-model options like`
 
@@ -80,18 +80,20 @@ type `[type: string]: another request-model options like`
 }
 ```
 
-**action**: the collection of the commit.
+*   **action**: the collection of the commit.
+
 type `[type: string]: Function`
+
 params `(chain: Chain, ...args: any[])`
 
 ```js
-    action: {
-        init(chain, ...args) {
-            return chain
-                .commit('getNameById', args[0])
-                .commit('enums', args[1]);
-        },
+action: {
+    init(chain, ...args) {
+        return chain
+            .commit('getNameById', args[0])
+            .commit('enums', args[1]);
     },
+}
 ```
 
 #### Methods
