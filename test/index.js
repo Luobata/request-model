@@ -59,6 +59,11 @@ window.onload = () => {
                 // 返回一个Promise
             },
         },
+        action: {
+            init(chain, ...args) {
+                return chain.commit('getNameById').commit('enums');
+            },
+        },
     });
     console.log(rModel);
     // simply request
@@ -161,6 +166,14 @@ window.onload = () => {
             .chain()
             .commit('wrap/getClueList', 33)
             .commit('wrap/getClueEnums', 22);
+    };
+    const test9 = () => {
+        rModel
+            .chain()
+            .action(1, 2)
+            .commit('wrap/getClueList', 33)
+            .commit('wrap/getClueEnums', 22)
+            .action(3, 4);
     };
 
     test7();

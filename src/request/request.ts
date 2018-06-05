@@ -16,19 +16,24 @@ interface IModule {
     [key: string]: IRequestConfig;
 }
 
-export interface IRequestConfig {
-    request: IRequest;
-    modules?: IModule;
-    config?: IConfig;
-}
-
-interface IoutputRequest {
-    request: IRequest;
+interface IAction {
+    [key: string]: Function;
 }
 
 interface IConfig {
     promiseWrap?: boolean;
     [key: string]: boolean;
+}
+
+export interface IRequestConfig {
+    request: IRequest;
+    modules?: IModule;
+    config?: IConfig;
+    action?: IAction;
+}
+
+interface IoutputRequest {
+    request: IRequest;
 }
 
 interface IrequestConfig {

@@ -141,6 +141,10 @@ export default class Chain {
 
         return this;
     }
+
+    public action(key: string, ...args: any[]): Chain {
+        return this.request.requestConfig.action[key].call(this, ...args);
+    }
     // tslint:enable no-reserved-keywords
 
     private commitChain(result: any): void {
