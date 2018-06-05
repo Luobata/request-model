@@ -68,7 +68,7 @@ type `{ [type: string]: Function }`
 
 **module**: sub modules to request-model(only one hierarchy is supported now)
 
-type ``` [type: string]: another request-model options like```
+type `[type: string]: another request-model options like`
 
 ```Js
 {
@@ -80,51 +80,64 @@ type ``` [type: string]: another request-model options like```
 }
 ```
 
-
-
 #### Methods
 
-- chain
-  return  ```new Chain()```
-- commitWrap
-  params  ```key: string (the function name in the constructor request)```
+*   **chain**
+    Use to start the chain usage.
+    return `new Chain()`
+*   commitWrap
+    params `key: string (the function name in the constructor request)`
+*   commitAll
+    params `The return Array of commitWrap`
+    etc:
+    ```js
+      rModel
+          .chain()
+          .commit('getNameById', 1)
+          .then(data => {
+              return rModel.commitAll([
+                  rModel.commitWrap('enums2', 2),
+                  rModel.commitWrap('enums4', 4),
+              ]);
+          .finish(data => {
+              // data = [1 [2, 4]]
+          });
+    ```
 
-------
+---
 
 #### Chain
 
 generator after requestModel.chain()
 
-
-
 #### Methods
 
-- commit
+*   **commit**
 
-  params ```key: string```
+    params `key: string`
 
-  return ```Chain```
+    return `Chain`
 
-- then
+*   then
 
-  join your commit chain with another Function.
+    join your commit chain with another Function.
 
-  params ```(resolve: Function, ?reject: Function)```
+    params `(resolve: Function, ?reject: Function)`
 
-  return ```Chain```
+    return `Chain`
 
-- finish
+*   finish
 
-  add a finish Function will resolve after all the commit.
+    add a finish Function will resolve after all the commit.
 
-  params ```(resolve: Function, ?reject: Function)```
+    params `(resolve: Function, ?reject: Function)`
 
-  return ```Chain```
+    return `Chain`
 
-- catch
+*   catch
 
-  add a error catch Functin.
+    add a error catch Functin.
 
-  params ```(reject: Function)```
+    params `(reject: Function)`
 
-  return ```Chain```
+    return `Chain`
