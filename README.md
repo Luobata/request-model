@@ -57,44 +57,40 @@ const rModel = new RequestModel({
 ##### Construction options
 
 *   **request**:
+    type `{ [type: string]: Function }`
 
-type `{ [type: string]: Function }`
+*   **config**: config for requestModel, the sub module config will extends its parent config.
 
-**config**: config for requestModel, the sub module config will extends its parent config.
-
-| key         | type    | default | description                              |
-| :---------- | :------ | :------ | :--------------------------------------- |
-| promiseWrap | boolean | false   | Wrap your request fucntion with Promise. |
+    | key         | type    | default | description                              |
+    | :---------- | :------ | :------ | :--------------------------------------- |
+    | promiseWrap | boolean | false   | Wrap your request fucntion with Promise. |
 
 *   **module**: sub modules to request-model(only one hierarchy is supported now)
+    type `[type: string]: another request-model options like`
 
-type `[type: string]: another request-model options like`
-
-```Js
-{
-  key: {
-    request: {
-      [string]: Function
+    ```js
+    {
+      key: {
+        request: {
+          [string]: Function
+        }
+      }
     }
-  }
-}
-```
+    ```
 
 *   **action**: the collection of the commit.
+    type `[type: string]: Function`
+    params `(chain: Chain, ...args: any[])`
 
-type `[type: string]: Function`
-
-params `(chain: Chain, ...args: any[])`
-
-```js
-action: {
-    init(chain, ...args) {
-        return chain
-            .commit('getNameById', args[0])
-            .commit('enums', args[1]);
-    },
-}
-```
+    ```js
+    action: {
+        init(chain, ...args) {
+            return chain
+                .commit('getNameById', args[0])
+                .commit('enums', args[1]);
+        },
+    }
+    ```
 
 #### Methods
 
