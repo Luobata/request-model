@@ -122,10 +122,14 @@ export default class Chain {
     }
 
     public then(resolve: Function, reject: Function): Chain {
-        this.waitList.push({
-            resolve,
-            reject,
-        });
+        if (this.deferItem) {
+            this.waitList.push({
+                resolve,
+                reject,
+            });
+        } else {
+            this.innerResolve({ resolve, reject });
+        }
 
         return this;
     }
@@ -168,7 +172,7 @@ export default class Chain {
         }
     }
 
-    private innerResolve(then: Ithen, result: any): Chain {
+    private innerResolve(then: Ithen, result?: any): Chain {
         const deferItem: any = then.resolve(result);
         if (isPromise(deferItem)) {
             // object Promise
