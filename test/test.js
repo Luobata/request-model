@@ -52,6 +52,13 @@ const rModel = new RequestModel({
             // 返回一个Promise
         },
     },
+    action: {
+        init(chain, ...args) {
+            return chain
+                .commit('getNameById', args[0])
+                .commit('enums', args[1]);
+        },
+    },
 });
 global.rModel = rModel;
 describe('request-model', () => {

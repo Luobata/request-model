@@ -58,7 +58,9 @@ window.onload = () => {
         },
         action: {
             init(chain, ...args) {
-                return chain.commit('getNameById').commit('enums');
+                return chain
+                    .commit('getNameById', args[0])
+                    .commit('enums', args[1]);
             },
         },
     });
@@ -167,10 +169,14 @@ window.onload = () => {
     const test9 = () => {
         rModel
             .chain()
-            .action(1, 2)
+            .action('init', 1, 2)
+            .commit('enums', 'c')
             .commit('wrap/getClueList', 33)
             .commit('wrap/getClueEnums', 22)
-            .action(3, 4);
+            .action('init', 3, 4)
+            .finish(data => {
+                console.log(data);
+            });
     };
 
     const test10 = () => {
@@ -218,7 +224,7 @@ window.onload = () => {
             });
     };
 
-    test12();
+    test9();
 };
 
 // 实现requst嵌套 all之类的操作

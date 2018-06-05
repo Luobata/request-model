@@ -152,3 +152,16 @@ it('method commit with moodule', function(done) {
             done();
         });
 });
+
+it('method commit with moodule', function(done) {
+    rModel
+        .chain()
+        .action('init', 1, 2)
+        .commit('enums', 'c')
+        .action('init', 3, 4)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, [2, 1], ['c', [2, 1]], 3, [4, 3]]);
+            done();
+        });
+});
