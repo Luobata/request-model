@@ -80,6 +80,20 @@ type `[type: string]: another request-model options like`
 }
 ```
 
+**action**: the collection of the commit.
+type `[type: string]: Function`
+params `(chain: Chain, ...args: any[])`
+
+```js
+    action: {
+        init(chain, ...args) {
+            return chain
+                .commit('getNameById', args[0])
+                .commit('enums', args[1]);
+        },
+    },
+```
+
 #### Methods
 
 *   **chain**
