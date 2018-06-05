@@ -57,20 +57,7 @@ it('method then usage with promise return', function(done) {
         });
 });
 
-it('method commit with Array input', function(done) {
-    rModel
-        .chain()
-        .commit('getNameById', 1)
-        .commit(['enums4', 'enums2'])
-        .commit('enums', 111)
-        .finish(data => {
-            result = data;
-            assert.deepEqual(result, [1, [1, 1], [111, [1, 1]]]);
-            done();
-        });
-});
-
-it('method commit with commit-wrap in Array input', function(done) {
+it('method commit with commitAll in Array input', function(done) {
     rModel
         .chain()
         .commit('getNameById', 1)
@@ -84,6 +71,36 @@ it('method commit with commit-wrap in Array input', function(done) {
         .finish(data => {
             result = data;
             assert.deepEqual(result, [1, [2, 4], [111, [2, 4]]]);
+            done();
+        });
+});
+
+it('method commit with then infront of any commit', function(done) {
+    rModel
+        .chain()
+        .then(data => {
+            return rModel.commitAll([
+                rModel.commitWrap('enums2', 2),
+                rModel.commitWrap('enums4', 4),
+            ]);
+        })
+        .commit('enums', 111)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [[2, 4], [111, [2, 4]]]);
+            done();
+        });
+});
+
+it('method commit with Array input', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .commit(['enums4', 'enums2'])
+        .commit('enums', 111)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, [1, 1], [111, [1, 1]]]);
             done();
         });
 });
