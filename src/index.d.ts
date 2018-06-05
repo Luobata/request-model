@@ -1,13 +1,14 @@
 /**
  * @description index.d
  */
-import { IRequestConfig } from 'Request/request';
+import { IRequestConfig, IcommitWrap } from 'Request/request';
 
 export declare class RequestModel {
     constructor(request: IRequestConfig);
 
     public chain(): Chain;
     public commitWrap(key: string, ...args: any[]): object;
+    public commitAll(commitWrap: IcommitWrap[]): object[];
 }
 
 export declare class Chain {
