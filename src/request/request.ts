@@ -58,20 +58,24 @@ const defaultConfig: IConfig = {
 //     args: any[];
 // }
 
+// tslint:disable promise-function-async
 const formatFunctionToPromise: Function = (
     flag: boolean,
     fn: Function,
 ): Function => {
     if (flag) {
         return (...args: any[]): Promise<any> => {
-            return new Promise((resolve: Function, reject: Function): any => {
-                fn.call(null, resolve, reject, ...args);
-            });
+            return new Promise(
+                (resolve: Function, reject: Function): any => {
+                    fn.call(null, resolve, reject, ...args);
+                },
+            );
         };
     } else {
         return fn;
     }
 };
+// tslint:enable promise-function-async
 
 /**
  * class Request
@@ -104,13 +108,15 @@ export default class Request {
     }
 
     public commitAll(commitWrap: IcommitWrap[]): object[] {
-        return commitWrap.map((v: IcommitWrap): object => {
-            return {
-                [commitToken]: true,
-                key: v.key,
-                args: [...v.args],
-            };
-        });
+        return commitWrap.map(
+            (v: IcommitWrap): object => {
+                return {
+                    [commitToken]: true,
+                    key: v.key,
+                    args: [v.args],
+                };
+            },
+        );
     }
 
     private requestFormat(): void {
@@ -140,9 +146,7 @@ export default class Request {
             for (const j of tmpKeys) {
                 tmpRequest[j] = formatFunctionToPromise(
                     this.setting.modules[i].promiseWrap,
-                    <Function>(<IRequest>this.requestConfig.modules[i].request)[
-                        j
-                    ],
+                    <Function>this.requestConfig.modules[i].request[j],
                 );
             }
             outputRequest[i] = tmpRequest;
@@ -165,9 +169,11 @@ export default class Request {
             this.requestConfig.modules || {},
         );
 
-        keys.map((v: string): void => {
-            tmpConfig.config[v] = this.requestConfig.config[v];
-        });
+        keys.map(
+            (v: string): void => {
+                tmpConfig.config[v] = this.requestConfig.config[v];
+            },
+        );
 
         for (const i of modulesKeys) {
             tmpConfig.modules[i] = { ...tmpConfig.config };
@@ -176,9 +182,9 @@ export default class Request {
                 this.requestConfig.modules[i].config || {},
             );
             for (const j of tmpKeys) {
-                tmpConfig.modules[i][j] = (<IConfig>this.requestConfig.modules[
-                    i
-                ].config)[j];
+                tmpConfig.modules[i][j] = this.requestConfig.modules[i].config[
+                    j
+                ];
             }
         }
 
