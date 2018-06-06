@@ -224,7 +224,7 @@ window.onload = () => {
             });
     };
 
-    test9();
+    test12();
 };
 
 // 实现requst嵌套 all之类的操作
