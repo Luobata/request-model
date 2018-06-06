@@ -57,6 +57,7 @@ const rModel = new RequestModel({
 ##### Construction options
 
 *   **request**:
+    
     type `{ [type: string]: Function }`
 
 *   **config**: config for requestModel, the sub module config will extends its parent config.
@@ -66,6 +67,7 @@ const rModel = new RequestModel({
     | promiseWrap | boolean | false   | Wrap your request fucntion with Promise. |
 
 *   **module**: sub modules to request-model(only one hierarchy is supported now)
+    
     type `[type: string]: another request-model options like`
 
     ```js
@@ -79,7 +81,9 @@ const rModel = new RequestModel({
     ```
 
 *   **action**: the collection of the commit.
+    
     type `[type: string]: Function`
+    
     params `(chain: Chain, ...args: any[])`
 
     ```js
@@ -95,25 +99,30 @@ const rModel = new RequestModel({
 #### Methods
 
 *   **chain**
+    
     Use to start the chain usage.
+    
     return `new Chain()`
 *   commitWrap
+    
     params `key: string (the function name in the constructor request)`
 *   commitAll
+    
     params `The return Array of commitWrap`
+    
     etc:
     ```js
-      rModel
-          .chain()
-          .commit('getNameById', 1)
-          .then(data => {
-              return rModel.commitAll([
-                  rModel.commitWrap('enums2', 2),
-                  rModel.commitWrap('enums4', 4),
-              ]);
-          .finish(data => {
-              // data = [1 [2, 4]]
-          });
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(data => {
+            return rModel.commitAll([
+                rModel.commitWrap('enums2', 2),
+                rModel.commitWrap('enums4', 4),
+            ]);
+        .finish(data => {
+            // data = [1 [2, 4]]
+        });
     ```
 
 ---
