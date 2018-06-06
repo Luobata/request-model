@@ -4,7 +4,7 @@
 import { commitToken } from 'Lib/conf';
 import { isArray, isObject, isPromise } from 'Lib/help';
 import { getFunctionInRequest } from 'Request/data';
-import { IAction, IRequest, IcommitWrap } from 'Request/request';
+import { IAction, IcommitWrap, IRequest } from 'Request/request';
 
 // tslint:disable no-any no-unsafe-any
 
