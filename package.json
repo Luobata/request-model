@@ -4,13 +4,13 @@
     "description": "",
     "main": "dist/request-model.js",
     "module": "dist/request-model.esm.js",
+    "types": "src/index.d.ts",
     "scripts": {
         "build": "node build/build.js",
         "build:esm": "rollup -c build/rollup.config.js",
         "dev:build": "rollup -w -c build/rollup.config.js",
         "dev:test": "node build/dev-server.js",
-        "test":
-            "cross-env NODE_ENV=test mocha --compilers js:babel-core/register test/test.js",
+        "test": "cross-env NODE_ENV=test mocha --compilers js:babel-core/register test/test.js",
         "tslint": "tslint -c tslint.json -r src/ -p ./tsconfig.json",
         "lint": "eslint --fix src/"
     },
