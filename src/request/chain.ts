@@ -56,8 +56,9 @@ const getAll: Function = (
     request: IRequest,
     args: any[],
 ): Function[] => {
-    return key.map((v: string | IcommitObj): Function =>
-        getFunctionInRequest(getKey(v), request)(...getArgs(v), ...args),
+    return key.map(
+        (v: string | IcommitObj): Function =>
+            getFunctionInRequest(getKey(v), request)(...getArgs(v), ...args),
     );
 };
 

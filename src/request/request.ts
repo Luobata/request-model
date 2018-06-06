@@ -113,7 +113,7 @@ export default class Request {
                 return {
                     [commitToken]: true,
                     key: v.key,
-                    args: [v.args],
+                    args: [...v.args],
                 };
             },
         );
