@@ -193,7 +193,9 @@ var Chain = function () {
             var _this2 = this;
 
             var deferItem = then.resolve(result);
-            if (isPromise(deferItem)) {
+            if (deferItem === undefined) {
+                return this;
+            } else if (isPromise(deferItem)) {
                 // object Promise
                 deferItem.then(function (data) {
                     _this2.commitChain(data);
