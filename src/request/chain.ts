@@ -175,7 +175,9 @@ export default class Chain {
 
     private innerResolve(then: Ithen, result?: any): Chain {
         const deferItem: any = then.resolve(result);
-        if (isPromise(deferItem)) {
+        if (deferItem === undefined) {
+            return this;
+        } else if (isPromise(deferItem)) {
             // object Promise
             deferItem.then(
                 (data: any) => {

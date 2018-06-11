@@ -223,8 +223,21 @@ window.onload = () => {
                 console.log(data);
             });
     };
+    const test13 = () => {
+        rModel
+            .chain()
+            .then(data => {
+                return rModel.commitAll([
+                    rModel.commitWrap('enums2', 2),
+                    rModel.commitWrap('enums4', 4),
+                ]);
+            })
+            .then(data => {
+                console.log(data);
+            });
+    };
 
-    test12();
+    test13();
 };
 
 // 实现requst嵌套 all之类的操作
