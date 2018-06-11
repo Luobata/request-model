@@ -50,6 +50,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function isIdefer(v) {
+    // return 'key' in v;
+    return v.key !== undefined;
+}
 var isCommitObj = function isCommitObj(v) {
     return isObject(v) ? 'handler' in v : false;
 };
@@ -114,13 +118,20 @@ var Chain = function () {
                 if (!isPromise(defer)) {
                     throw new Error('The ' + key + ' function not return a Promise function');
                 }
+                // call entry one
                 this.deferItem = defer;
                 this.deferItem.then(function (result) {
                     _this.commitChain(result);
                 }, function (error) {
-                    if (_this.reject) {
+                    var reject = void 0;
+                    if (_this.waitList.length && !isIdefer(_this.waitList[0])) {
+                        reject = _this.waitList[0].reject;
+                    } else {
+                        reject = _this.reject;
+                    }
+                    if (reject) {
                         _this.deferItem = null;
-                        _this.reject(error);
+                        reject(error);
                     }
                 });
             }
@@ -174,7 +185,8 @@ var Chain = function () {
             if (this.waitList.length) {
                 var keyObj = this.waitList.shift();
                 this.deferItem = null;
-                if ('key' in keyObj) {
+                // if ('key' in keyObj) {
+                if (isIdefer(keyObj)) {
                     // object Idefer
                     this.commit.apply(this, [keyObj.key].concat(_toConsumableArray(keyObj.args), [result]));
                 } else {
@@ -192,6 +204,7 @@ var Chain = function () {
         value: function innerResolve(then, result) {
             var _this2 = this;
 
+            // call entry two
             var deferItem = then.resolve(result);
             if (isPromise(deferItem)) {
                 // object Promise
