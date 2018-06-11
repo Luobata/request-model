@@ -254,8 +254,25 @@ window.onload = () => {
     const test14 = () => {
         rModel
             .chain()
-            .commit('enums', 111)
-            .commit('reject', 2)
+            .commit(['enums', 'reject'])
+            .then(
+                data => {},
+                data => {
+                    console.log(data);
+                },
+            );
+    };
+    const test15 = () => {
+        rModel
+            .chain()
+            .commit('getNameById', 1)
+            .then(data => {
+                // return rModel.commitWrap('reject', 3);
+                return rModel.commitAll([
+                    rModel.commitWrap('enums2', 2),
+                    rModel.commitWrap('reject', 4),
+                ]);
+            })
             .then(
                 data => {},
                 data => {
@@ -264,7 +281,7 @@ window.onload = () => {
             );
     };
 
-    test14();
+    test15();
 };
 
 // 实现requst嵌套 all之类的操作

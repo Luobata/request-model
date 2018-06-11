@@ -5,7 +5,6 @@ import { commitToken } from 'Lib/conf';
 import { isArray, isObject, isPromise } from 'Lib/help';
 import { getFunctionInRequest } from 'Request/data';
 import { IAction, IcommitWrap, IRequest } from 'Request/request';
-import { isWithStatement } from 'babel-types';
 
 // tslint:disable no-any no-unsafe-any
 
@@ -27,9 +26,10 @@ interface IcommitObj {
     args: any[];
 }
 
-const isIdefer: Function = (v: Idefer | Ithen): v is Idefer => {
-    return 'key' in v;
-};
+function isIdefer(v: any): v is Idefer {
+    // return 'key' in v;
+    return v.key !== undefined;
+}
 const isCommitObj: Function = (v: any): boolean => {
     return isObject(v) ? 'handler' in v : false;
 };
@@ -109,6 +109,7 @@ export default class Chain {
                     `The ${key} function not return a Promise function`,
                 );
             }
+            // call entry one
             this.deferItem = defer;
             this.deferItem.then(
                 (result: any) => {
@@ -169,7 +170,8 @@ export default class Chain {
         if (this.waitList.length) {
             const keyObj: Idefer | Ithen = this.waitList.shift();
             this.deferItem = null;
-            if ('key' in keyObj) {
+            // if ('key' in keyObj) {
+            if (isIdefer(keyObj)) {
                 // object Idefer
                 this.commit(keyObj.key, ...keyObj.args, result);
             } else {
@@ -184,6 +186,7 @@ export default class Chain {
     }
 
     private innerResolve(then: Ithen, result?: any): Chain {
+        // call entry two
         const deferItem: any = then.resolve(result);
         if (isPromise(deferItem)) {
             // object Promise
