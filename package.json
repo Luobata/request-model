@@ -1,6 +1,6 @@
 {
     "name": "request-model",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "",
     "main": "dist/request-model.js",
     "module": "dist/request-model.esm.js",
