@@ -193,9 +193,7 @@ var Chain = function () {
             var _this2 = this;
 
             var deferItem = then.resolve(result);
-            if (deferItem === undefined) {
-                return this;
-            } else if (isPromise(deferItem)) {
+            if (isPromise(deferItem)) {
                 // object Promise
                 deferItem.then(function (data) {
                     _this2.commitChain(data);
@@ -213,7 +211,7 @@ var Chain = function () {
                     };
                 });
                 this.commit(item);
-            } else if (deferItem[commitToken]) {
+            } else if (deferItem !== undefined && deferItem[commitToken]) {
                 // another commit
                 this.commit.apply(this, [deferItem.key].concat(_toConsumableArray(deferItem.args)));
             } else {
