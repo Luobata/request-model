@@ -5,6 +5,7 @@ import { commitToken } from 'Lib/conf';
 import { isArray, isObject, isPromise } from 'Lib/help';
 import { getFunctionInRequest } from 'Request/data';
 import { IAction, IcommitWrap, IRequest } from 'Request/request';
+import { isWithStatement } from 'babel-types';
 
 // tslint:disable no-any no-unsafe-any
 
@@ -26,6 +27,9 @@ interface IcommitObj {
     args: any[];
 }
 
+const isIdefer: Function = (v: Idefer | Ithen): v is Idefer => {
+    return 'key' in v;
+};
 const isCommitObj: Function = (v: any): boolean => {
     return isObject(v) ? 'handler' in v : false;
 };
@@ -111,9 +115,15 @@ export default class Chain {
                     this.commitChain(result);
                 },
                 (error: any) => {
-                    if (this.reject) {
+                    let reject!: Function;
+                    if (this.waitList.length && !isIdefer(this.waitList[0])) {
+                        reject = (<Ithen>this.waitList[0]).reject;
+                    } else {
+                        reject = this.reject;
+                    }
+                    if (reject) {
                         this.deferItem = null;
-                        this.reject(error);
+                        reject(error);
                     }
                 },
             );

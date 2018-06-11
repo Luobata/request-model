@@ -11,8 +11,6 @@ const rModel = new RequestModel({
     },
     request: {
         getNameById(params) {
-            // 返回一个Promise
-            // 能不能自动包成一个Promise
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
@@ -25,7 +23,6 @@ const rModel = new RequestModel({
                     resolve([params, params2]);
                 }, 0);
             });
-            // 返回一个Promise
         },
         enums2(params) {
             return new Promise((resolve, reject) => {
@@ -33,7 +30,6 @@ const rModel = new RequestModel({
                     resolve(params);
                 }, 0);
             });
-            // 返回一个Promise
         },
         enums3(params) {
             return new Promise((resolve, reject) => {
@@ -41,7 +37,6 @@ const rModel = new RequestModel({
                     reject(params);
                 }, 0);
             });
-            // 返回一个Promise
         },
         enums4(params) {
             return new Promise((resolve, reject) => {
@@ -49,7 +44,23 @@ const rModel = new RequestModel({
                     resolve(params);
                 }, 0);
             });
-            // 返回一个Promise
+        },
+        reject(params) {
+            // rejct
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(params);
+                }, 0);
+            });
+        },
+        error(params) {
+            // error when call
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    console.log(a);
+                    resolve(params);
+                }, 0);
+            });
         },
     },
     action: {
@@ -67,5 +78,8 @@ describe('request-model', () => {
     });
     describe('test config', () => {
         require('./request-config');
+    });
+    describe('test error catch', () => {
+        require('./request-catch');
     });
 });

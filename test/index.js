@@ -55,6 +55,23 @@ window.onload = () => {
                 });
                 // 返回一个Promise
             },
+            reject(params) {
+                // rejct
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        reject(params);
+                    }, 0);
+                });
+            },
+            error(params) {
+                // error when call
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        console.log(a);
+                        resolve(params);
+                    }, 0);
+                });
+            },
         },
         action: {
             init(chain, ...args) {
@@ -234,7 +251,20 @@ window.onload = () => {
             });
     };
 
-    test13();
+    const test14 = () => {
+        rModel
+            .chain()
+            .commit('enums', 111)
+            .commit('reject', 2)
+            .then(
+                data => {},
+                data => {
+                    console.log(data);
+                },
+            );
+    };
+
+    test14();
 };
 
 // 实现requst嵌套 all之类的操作

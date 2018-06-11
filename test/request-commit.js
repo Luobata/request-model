@@ -42,6 +42,19 @@ it('method then usage with no-promise return', function(done) {
         });
 });
 
+it('method then usage with nothing return', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(data => {})
+        .commit('enums2')
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [1, undefined, undefined]);
+            done();
+        });
+});
+
 it('method then usage with promise return', function(done) {
     rModel
         .chain()
