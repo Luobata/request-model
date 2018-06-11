@@ -175,9 +175,7 @@ export default class Chain {
 
     private innerResolve(then: Ithen, result?: any): Chain {
         const deferItem: any = then.resolve(result);
-        if (deferItem === undefined) {
-            return this;
-        } else if (isPromise(deferItem)) {
+        if (isPromise(deferItem)) {
             // object Promise
             deferItem.then(
                 (data: any) => {
@@ -198,7 +196,7 @@ export default class Chain {
                 };
             });
             this.commit(item);
-        } else if (deferItem[commitToken]) {
+        } else if (deferItem !== undefined && deferItem[commitToken]) {
             // another commit
             this.commit(deferItem.key, ...deferItem.args);
         } else {

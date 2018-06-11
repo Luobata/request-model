@@ -226,12 +226,9 @@ window.onload = () => {
     const test13 = () => {
         rModel
             .chain()
-            .then(data => {
-                return rModel.commitAll([
-                    rModel.commitWrap('enums2', 2),
-                    rModel.commitWrap('enums4', 4),
-                ]);
-            })
+            .commit('enums', 111)
+            .then(data => {})
+            .commit('getNameById', 222)
             .then(data => {
                 console.log(data);
             });
