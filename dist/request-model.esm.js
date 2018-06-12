@@ -51,7 +51,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 function isIdefer(v) {
-    // return 'key' in v;
     return v.key !== undefined;
 }
 var isCommitObj = function isCommitObj(v) {
@@ -100,6 +99,9 @@ var Chain = function () {
                 args[_key - 1] = arguments[_key];
             }
 
+            if (this.unResolveRejection) {
+                return this;
+            }
             if (!hasRequest(key, this.request)) {
                 throw new Error('can not find matched ' + key + ' function');
             }
@@ -144,8 +146,12 @@ var Chain = function () {
     }, {
         key: 'finish',
         value: function finish(resolve, reject) {
-            this.resolve = resolve;
-            this.reject = reject;
+            if (!this.waitList.length && !this.deferItem) {
+                this.innerResolve({ resolve: resolve, reject: reject });
+            } else {
+                this.resolve = resolve;
+                this.reject = reject;
+            }
             return this;
         }
         // tslint:disable no-reserved-keywords
@@ -153,7 +159,12 @@ var Chain = function () {
     }, {
         key: 'catch',
         value: function _catch(reject) {
-            this.reject = reject;
+            var noop = function noop() {};
+            if (!this.waitList.length && !this.deferItem) {
+                this.innerResolve({ resolve: noop, reject: reject });
+            } else {
+                this.reject = reject;
+            }
             return this;
         }
         // tslint:enable no-reserved-keywords
@@ -197,10 +208,23 @@ var Chain = function () {
 
             // call entry two
             var deferItem = void 0;
-            try {
-                deferItem = then.resolve(result);
-            } catch (e) {
-                this.innerRejection(e);
+            if (this.unResolveRejection) {
+                if (then.reject) {
+                    then.reject(this.unResolveRejection);
+                    this.unResolveRejection = null;
+                } else if (this.innerRejection(this.unResolveRejection)) {
+                    this.unResolveRejection = null;
+                }
+                return this;
+            } else {
+                try {
+                    deferItem = then.resolve(result);
+                } catch (e) {
+                    if (!this.innerRejection(e)) {
+                        this.unResolveRejection = e;
+                    }
+                    return this;
+                }
             }
             if (isPromise(deferItem)) {
                 // object Promise
@@ -231,15 +255,30 @@ var Chain = function () {
         key: 'innerRejection',
         value: function innerRejection(error, fn) {
             var reject = void 0;
-            if (this.waitList.length && !isIdefer(this.waitList[0])) {
-                reject = this.waitList[0].reject;
-            } else {
+            // if (this.waitList.length && !isIdefer(this.waitList[0])) {
+            if (this.waitList.length) {
+                var index = 0;
+                for (var i = 0; i < this.waitList.length; i = i + 1) {
+                    if (!isIdefer(this.waitList[i]) && this.waitList[i].reject) {
+                        reject = this.waitList[i].reject;
+                        index = i;
+                        break;
+                    }
+                }
+                this.waitList.splice(0, index);
+            }
+            if (!reject && this.reject) {
                 reject = this.reject;
             }
             if (reject) {
-                fn && fn();
+                if (fn) {
+                    fn();
+                }
                 this.deferItem = null;
                 reject(error);
+                return true;
+            } else {
+                return false;
             }
         }
     }]);
