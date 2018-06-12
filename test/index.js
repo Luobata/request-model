@@ -66,6 +66,7 @@ window.onload = () => {
             error(params) {
                 // error when call
                 return new Promise((resolve, reject) => {
+                    console.log(b);
                     setTimeout(() => {
                         console.log(a);
                         resolve(params);
@@ -280,8 +281,53 @@ window.onload = () => {
                 },
             );
     };
+    const test16 = () => {
+        rModel
+            .chain()
+            .commit('error')
+            .then(
+                data => {},
+                data => {
+                    console.log(data);
+                },
+            );
+    };
+    const test18 = () => {
+        rModel
+            .chain()
+            .then(() => {
+                // return new Promise((resolve, reject) => {
+                //     console.log(b);
+                // });
+                console.log(b);
+                //return rModel.commitWrap('error');
+            })
+            .then(
+                data => {
+                    console.log(12);
+                },
+                data => {
+                    console.log(data);
+                },
+            );
+    };
+    const test17 = () => {
+        return new Promise((resolve, reject) => {
+            try {
+                setTimeout(() => {
+                    console.log(a);
+                    resolve();
+                }, 1);
+            } catch (e) {
+                reject(e);
+            }
+        });
+    };
 
-    test15();
+    test18();
+    // test17().catch(e => {
+    //     console.log(e);
+    // });
 };
 
 // 实现requst嵌套 all之类的操作

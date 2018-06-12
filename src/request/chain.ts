@@ -116,16 +116,7 @@ export default class Chain {
                     this.commitChain(result);
                 },
                 (error: any) => {
-                    let reject!: Function;
-                    if (this.waitList.length && !isIdefer(this.waitList[0])) {
-                        reject = (<Ithen>this.waitList[0]).reject;
-                    } else {
-                        reject = this.reject;
-                    }
-                    if (reject) {
-                        this.deferItem = null;
-                        reject(error);
-                    }
+                    this.innerRejection(error);
                 },
             );
         }
@@ -187,17 +178,21 @@ export default class Chain {
 
     private innerResolve(then: Ithen, result?: any): Chain {
         // call entry two
-        const deferItem: any = then.resolve(result);
+        let deferItem: any;
+        try {
+            deferItem = then.resolve(result);
+        } catch (e) {
+            this.innerRejection(e);
+        }
         if (isPromise(deferItem)) {
             // object Promise
+            this.deferItem = deferItem;
             deferItem.then(
                 (data: any) => {
                     this.commitChain(data);
                 },
                 (error: any) => {
-                    if (this.reject) {
-                        this.reject(error);
-                    }
+                    this.innerRejection(error);
                 },
             );
         } else if (isArray(deferItem)) {
@@ -217,5 +212,19 @@ export default class Chain {
         }
 
         return this;
+    }
+
+    private innerRejection(error: any, fn?: Function): void {
+        let reject!: Function;
+        if (this.waitList.length && !isIdefer(this.waitList[0])) {
+            reject = (<Ithen>this.waitList[0]).reject;
+        } else {
+            reject = this.reject;
+        }
+        if (reject) {
+            fn && fn();
+            this.deferItem = null;
+            reject(error);
+        }
     }
 }
