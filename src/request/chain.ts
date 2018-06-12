@@ -240,9 +240,22 @@ export default class Chain {
 
     private innerRejection(error: any, fn?: Function): boolean {
         let reject!: Function;
-        if (this.waitList.length && !isIdefer(this.waitList[0])) {
-            reject = (<Ithen>this.waitList[0]).reject;
-        } else {
+        // if (this.waitList.length && !isIdefer(this.waitList[0])) {
+        if (this.waitList.length) {
+            let index: number = 0;
+            for (let i: number = 0; i < this.waitList.length; i = i + 1) {
+                if (
+                    !isIdefer(this.waitList[i]) &&
+                    (<Ithen>this.waitList[i]).reject
+                ) {
+                    reject = (<Ithen>this.waitList[i]).reject;
+                    index = i;
+                    break;
+                }
+            }
+            this.waitList.splice(0, index);
+        }
+        if (!reject && this.reject) {
             reject = this.reject;
         }
         if (reject) {
