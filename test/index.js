@@ -304,30 +304,76 @@ window.onload = () => {
             })
             .then(
                 data => {
-                    console.log(12);
+                    console.log(1, 12);
                 },
                 data => {
+                    console.log(1, data);
+                },
+            )
+            .then(
+                data => {
+                    console.log(2, 12);
+                },
+                data => {
+                    console.log(2, data);
+                },
+            );
+    };
+    const test19 = () => {
+        rModel
+            .chain()
+            .then(() => {
+                // return new Promise((resolve, reject) => {
+                //     console.log(b);
+                // });
+                console.log(b);
+                //return rModel.commitWrap('error');
+            })
+            .then(data => {
+                console.log(1, 12);
+            })
+            .then(
+                data => {
+                    console.log(2, 12);
+                },
+                data => {
+                    console.log(2, data);
+                },
+            )
+            .finish(
+                data => {
                     console.log(data);
+                },
+                data => {
+                    console.log(2, data);
                 },
             );
     };
     const test17 = () => {
         return new Promise((resolve, reject) => {
             try {
-                setTimeout(() => {
-                    console.log(a);
-                    resolve();
-                }, 1);
+                console.log(a);
             } catch (e) {
                 reject(e);
             }
         });
     };
 
-    test18();
-    // test17().catch(e => {
-    //     console.log(e);
-    // });
+    test19();
+    // test17()
+    //     .then(
+    //         () => {
+    //             console.log(2);
+    //         },
+    //     )
+    //     .then(
+    //         () => {
+    //             console.log(1);
+    //         },
+    //     )
+    //     .catch(e => {
+    //         console.log(e);
+    //     });
 };
 
 // 实现requst嵌套 all之类的操作

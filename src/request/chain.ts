@@ -27,7 +27,6 @@ interface IcommitObj {
 }
 
 function isIdefer(v: any): v is Idefer {
-    // return 'key' in v;
     return v.key !== undefined;
 }
 const isCommitObj: Function = (v: any): boolean => {
@@ -77,6 +76,7 @@ export default class Chain {
     private resultList: any[];
     private resolve: Function;
     private reject: Function;
+    private unResolveRejection: any;
 
     constructor(request: IRequest, action: IAction) {
         this.request = request;
@@ -124,7 +124,7 @@ export default class Chain {
         return this;
     }
 
-    public then(resolve: Function, reject: Function): Chain {
+    public then(resolve: Function, reject?: Function): Chain {
         if (this.deferItem) {
             this.waitList.push({
                 resolve,
@@ -137,9 +137,13 @@ export default class Chain {
         return this;
     }
 
-    public finish(resolve: Function, reject: Function): Chain {
-        this.resolve = resolve;
-        this.reject = reject;
+    public finish(resolve: Function, reject?: Function): Chain {
+        if (!this.waitList.length && !this.deferItem) {
+            this.innerResolve({ resolve, reject });
+        } else {
+            this.resolve = resolve;
+            this.reject = reject;
+        }
 
         return this;
     }
@@ -179,10 +183,25 @@ export default class Chain {
     private innerResolve(then: Ithen, result?: any): Chain {
         // call entry two
         let deferItem: any;
-        try {
-            deferItem = then.resolve(result);
-        } catch (e) {
-            this.innerRejection(e);
+        if (this.unResolveRejection) {
+            if (then.reject) {
+                then.reject(this.unResolveRejection);
+                this.unResolveRejection = null;
+            } else if (this.innerRejection(this.unResolveRejection)) {
+                this.unResolveRejection = null;
+            }
+
+            return this;
+        } else {
+            try {
+                deferItem = then.resolve(result);
+            } catch (e) {
+                if (!this.innerRejection(e)) {
+                    this.unResolveRejection = e;
+                }
+
+                return this;
+            }
         }
         if (isPromise(deferItem)) {
             // object Promise
@@ -214,7 +233,7 @@ export default class Chain {
         return this;
     }
 
-    private innerRejection(error: any, fn?: Function): void {
+    private innerRejection(error: any, fn?: Function): boolean {
         let reject!: Function;
         if (this.waitList.length && !isIdefer(this.waitList[0])) {
             reject = (<Ithen>this.waitList[0]).reject;
@@ -222,9 +241,15 @@ export default class Chain {
             reject = this.reject;
         }
         if (reject) {
-            fn && fn();
+            if (fn) {
+                fn();
+            }
             this.deferItem = null;
             reject(error);
+
+            return true;
+        } else {
+            return false;
         }
     }
 }
