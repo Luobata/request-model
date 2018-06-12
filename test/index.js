@@ -66,7 +66,7 @@ window.onload = () => {
             error(params) {
                 // error when call
                 return new Promise((resolve, reject) => {
-                    console.log(b);
+                    throw new Error('error');
                     setTimeout(() => {
                         console.log(a);
                         resolve(params);
@@ -358,8 +358,20 @@ window.onload = () => {
             }
         });
     };
+    const test20 = () => {
+        rModel
+            .chain()
+            .commit('error')
+            .then(
+                data => {},
+                data => {
+                    debugger;
+                    console.log(data);
+                },
+            );
+    };
 
-    test19();
+    test20();
     // test17()
     //     .then(
     //         () => {

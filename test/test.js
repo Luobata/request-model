@@ -57,8 +57,12 @@ const rModel = new RequestModel({
             // error when call
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
-                    console.log(a);
-                    resolve(params);
+                    try {
+                        throw new Error('error');
+                        resolve(params);
+                    } catch (e) {
+                        reject(e);
+                    }
                 }, 0);
             });
         },
