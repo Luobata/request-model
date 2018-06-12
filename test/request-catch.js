@@ -88,7 +88,7 @@ it('method catch usage with commit error', function(done) {
         );
 });
 
-it('method then reject aync catch', function(done) {
+it('method then reject sync catch', function(done) {
     rModel
         .chain()
         .then(() => {
@@ -114,7 +114,7 @@ it('method then reject aync catch', function(done) {
         );
 });
 
-it('method then reject aync catch', function(done) {
+it('method then reject sync catch 2', function(done) {
     rModel
         .chain()
         .then(() => {
@@ -133,4 +133,158 @@ it('method then reject aync catch', function(done) {
                 done();
             },
         );
+});
+
+it('method then reject sync catch 3', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(() => {
+            throw new Error('error');
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .then(
+            data => {
+                assert.deepEqual(data, undefined);
+            },
+            data => {
+                assert.deepEqual(data.message, 'error');
+                done();
+            },
+        );
+});
+
+it('method finish reject sync catch', function(done) {
+    rModel
+        .chain()
+        .then(() => {
+            throw new Error('error');
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .then(
+            data => {
+                assert.deepEqual(data, undefined);
+            },
+            data => {
+                assert.deepEqual(data.message, 'error');
+            },
+        )
+        .finish(
+            data => {
+                assert.deepEqual(data, undefined);
+                done();
+            },
+            data => {
+                assert.deepEqual(data, undefined);
+            },
+        );
+});
+
+it('method finish reject sync catch 2', function(done) {
+    rModel
+        .chain()
+        .then(() => {
+            throw new Error('error');
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .finish(
+            data => {
+                assert.deepEqual(data, undefined);
+            },
+            data => {
+                assert.deepEqual(data.message, 'error');
+                done();
+            },
+        );
+});
+
+it('method finish reject sync catch 3', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(() => {
+            throw new Error('error');
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .finish(
+            data => {
+                assert.deepEqual(data, undefined);
+            },
+            data => {
+                assert.deepEqual(data.message, 'error');
+                done();
+            },
+        );
+});
+it('method catch reject sync', function(done) {
+    rModel
+        .chain()
+        .then(() => {
+            throw new Error('error');
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .catch(data => {
+            assert.deepEqual(data.message, 'error');
+            done();
+        });
+});
+
+it('method catch reject sync 2', function(done) {
+    rModel
+        .chain()
+        .then(() => {
+            throw new Error('error');
+        })
+        .then(
+            data => {
+                assert.deepEqual(data, undefined);
+            },
+            data => {
+                assert.deepEqual(data.message, 'error');
+            },
+        )
+        .commit('getNameById', 1)
+        .then(data => {
+            assert.deepEqual(data, 1);
+            done();
+        })
+        .catch(data => {});
+});
+
+it('method catch reject sync 3', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(() => {
+            throw new Error('error');
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .then(data => {
+            assert.deepEqual(data, undefined);
+        })
+        .catch(data => {
+            assert.deepEqual(data.message, 'error');
+            done();
+        });
 });

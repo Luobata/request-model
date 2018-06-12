@@ -322,24 +322,16 @@ window.onload = () => {
     const test19 = () => {
         rModel
             .chain()
+            .commit('getNameById', 1)
             .then(() => {
-                // return new Promise((resolve, reject) => {
-                //     console.log(b);
-                // });
                 console.log(b);
-                //return rModel.commitWrap('error');
             })
             .then(data => {
                 console.log(1, 12);
             })
-            .then(
-                data => {
-                    console.log(2, 12);
-                },
-                data => {
-                    console.log(2, data);
-                },
-            )
+            .then(data => {
+                console.log(2, 12);
+            })
             .finish(
                 data => {
                     console.log(data);
@@ -358,20 +350,9 @@ window.onload = () => {
             }
         });
     };
-    const test20 = () => {
-        rModel
-            .chain()
-            .commit('error')
-            .then(
-                data => {},
-                data => {
-                    debugger;
-                    console.log(data);
-                },
-            );
-    };
+    const test20 = () => {};
 
-    test20();
+    test19();
     // test17()
     //     .then(
     //         () => {
