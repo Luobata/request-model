@@ -150,7 +150,12 @@ export default class Chain {
 
     // tslint:disable no-reserved-keywords
     public catch(reject: Function): Chain {
-        this.reject = reject;
+        const noop: Function = (): void => {};
+        if (!this.waitList.length && !this.deferItem) {
+            this.innerResolve({ resolve: noop, reject });
+        } else {
+            this.reject = reject;
+        }
 
         return this;
     }
