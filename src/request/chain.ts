@@ -86,6 +86,9 @@ export default class Chain {
     }
 
     public commit(key: deferKey, ...args: any[]): Chain {
+        if (this.unResolveRejection) {
+            return this;
+        }
         if (!hasRequest(key, this.request)) {
             throw new Error(`can not find matched ${key} function`);
         }
