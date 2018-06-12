@@ -123,16 +123,7 @@ var Chain = function () {
                 this.deferItem.then(function (result) {
                     _this.commitChain(result);
                 }, function (error) {
-                    var reject = void 0;
-                    if (_this.waitList.length && !isIdefer(_this.waitList[0])) {
-                        reject = _this.waitList[0].reject;
-                    } else {
-                        reject = _this.reject;
-                    }
-                    if (reject) {
-                        _this.deferItem = null;
-                        reject(error);
-                    }
+                    _this.innerRejection(error);
                 });
             }
             return this;
@@ -205,15 +196,19 @@ var Chain = function () {
             var _this2 = this;
 
             // call entry two
-            var deferItem = then.resolve(result);
+            var deferItem = void 0;
+            try {
+                deferItem = then.resolve(result);
+            } catch (e) {
+                this.innerRejection(e);
+            }
             if (isPromise(deferItem)) {
                 // object Promise
+                this.deferItem = deferItem;
                 deferItem.then(function (data) {
                     _this2.commitChain(data);
                 }, function (error) {
-                    if (_this2.reject) {
-                        _this2.reject(error);
-                    }
+                    _this2.innerRejection(error);
                 });
             } else if (isArray(deferItem)) {
                 // 暂时可以认为一定是 commitAll 包装
@@ -231,6 +226,21 @@ var Chain = function () {
                 this.commitChain(deferItem);
             }
             return this;
+        }
+    }, {
+        key: 'innerRejection',
+        value: function innerRejection(error, fn) {
+            var reject = void 0;
+            if (this.waitList.length && !isIdefer(this.waitList[0])) {
+                reject = this.waitList[0].reject;
+            } else {
+                reject = this.reject;
+            }
+            if (reject) {
+                fn && fn();
+                this.deferItem = null;
+                reject(error);
+            }
         }
     }]);
 
