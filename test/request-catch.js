@@ -123,7 +123,7 @@ it('method then reject sync catch 2', function(done) {
         .then(data => {
             assert.deepEqual(data, undefined);
         })
-        .commit('getNameById', 1)
+        .commit('getNameById', 1) // 保证这个getNameById不执行
         .then(
             data => {
                 assert.deepEqual(data, undefined);

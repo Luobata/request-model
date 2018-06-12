@@ -13,6 +13,7 @@ window.onload = () => {
         },
         request: {
             getNameById(params) {
+                console.log(params);
                 // 返回一个Promise
                 // 能不能自动包成一个Promise
                 return new Promise((resolve, reject) => {
@@ -295,6 +296,7 @@ window.onload = () => {
     const test18 = () => {
         rModel
             .chain()
+            //.commit('getNameById', 1)
             .then(() => {
                 // return new Promise((resolve, reject) => {
                 //     console.log(b);
@@ -302,15 +304,14 @@ window.onload = () => {
                 console.log(b);
                 //return rModel.commitWrap('error');
             })
-            .then(
-                data => {
-                    console.log(1, 12);
-                },
-                data => {
-                    console.log(1, data);
-                },
-            )
-            .then(
+            .then(data => {
+                console.log(1, 12);
+            })
+            // .commit('getNameById', 4)
+            // .then(() => {
+            //     return rModel.commitWrap('getNameById', 3);
+            // })
+            .finish(
                 data => {
                     console.log(2, 12);
                 },
@@ -352,7 +353,7 @@ window.onload = () => {
     };
     const test20 = () => {};
 
-    test19();
+    test18();
     // test17()
     //     .then(
     //         () => {
