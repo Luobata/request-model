@@ -43,8 +43,8 @@ interface IoutputRequest {
 
 interface IrequestConfig {
     config: IConfig;
-    modules?: {
-        [key: string]: IConfig;
+    modules: {
+        [key: string]: IrequestConfig;
     };
 }
 
@@ -91,6 +91,7 @@ export default class Request {
         this.requestConfig = request;
 
         this.setting = this.getRequestConfig();
+        console.log(this.setting);
         this.action = this.requestConfig.action;
         this.requestFormat();
     }
@@ -145,7 +146,7 @@ export default class Request {
             );
             for (const j of tmpKeys) {
                 tmpRequest[j] = formatFunctionToPromise(
-                    this.setting.modules[i].promiseWrap,
+                    this.setting.modules[i].config.promiseWrap,
                     <Function>this.requestConfig.modules[i].request[j],
                 );
             }
@@ -153,6 +154,7 @@ export default class Request {
         }
 
         this.request = outputRequest;
+        console.log(this.request);
     }
 
     private getRequestConfig(): IrequestConfig {
@@ -175,18 +177,39 @@ export default class Request {
             },
         );
 
-        for (const i of modulesKeys) {
-            tmpConfig.modules[i] = { ...tmpConfig.config };
-            const tmpKeys: string[] = Object.keys.call(
-                null,
-                this.requestConfig.modules[i].config || {},
-            );
-            for (const j of tmpKeys) {
-                tmpConfig.modules[i][j] = this.requestConfig.modules[i].config[
-                    j
-                ];
+        const loopModules = (
+            modulesKeys: string[],
+            modules: IModule,
+            pModules: IrequestConfig,
+        ) => {
+            for (const i of modulesKeys) {
+                pModules.modules[i] = {
+                    config: { ...pModules.config },
+                    modules: {},
+                };
+                const tmpKeys: string[] = Object.keys.call(
+                    null,
+                    modules[i].config || {},
+                );
+                for (const j of tmpKeys) {
+                    pModules.modules[i].config[j] = modules[i].config[j];
+                }
+
+                // 如果还有子module 循环
+                const subModules: string[] = Object.keys.call(
+                    null,
+                    modules[i].modules || {},
+                );
+                if (subModules.length) {
+                    loopModules(
+                        subModules,
+                        modules[i].modules,
+                        pModules.modules[i],
+                    );
+                }
             }
-        }
+        };
+        loopModules(modulesKeys, this.requestConfig.modules, tmpConfig);
 
         return tmpConfig;
     }
