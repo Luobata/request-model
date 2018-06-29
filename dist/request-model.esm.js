@@ -30,19 +30,22 @@ var isPromise = function isPromise(obj) {
 
 var getFunctionInRequest = function getFunctionInRequest(key, request) {
     var iRequest = request;
-    if (key.indexOf('/') !== -1) {
-        var keys = key.split('/');
-        keys.map(function (v) {
-            if (!(iRequest instanceof Function)) {
-                iRequest = iRequest[v];
-            }
-        });
-    } else {
-        iRequest = iRequest[key];
-    }
-    if (iRequest instanceof Function) {
-        return iRequest;
-    }
+    var result = void 0;
+    try {
+        if (key.indexOf('/') !== -1) {
+            var keys = key.split('/');
+            keys.map(function (v, i) {
+                if (i !== keys.length - 1) {
+                    iRequest = iRequest.modules[v];
+                } else {
+                    result = iRequest.request[v];
+                }
+            });
+        } else {
+            result = iRequest.request[key];
+        }
+    } catch (e) {}
+    return result;
 };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -328,6 +331,7 @@ var Request = function () {
 
         this.requestConfig = request;
         this.setting = this.getRequestConfig();
+        console.log(this.setting);
         this.action = this.requestConfig.action;
         this.requestFormat();
     }
@@ -360,7 +364,10 @@ var Request = function () {
     }, {
         key: 'requestFormat',
         value: function requestFormat() {
-            var outputRequest = {};
+            var outputRequest = {
+                request: {},
+                modules: {}
+            };
             var requestKes = Object.keys.call(null, this.requestConfig.request || {});
             var modulesKeys = Object.keys.call(null, this.requestConfig.modules || {});
             var _iteratorNormalCompletion = true;
@@ -371,7 +378,7 @@ var Request = function () {
                 for (var _iterator = requestKes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var i = _step.value;
 
-                    outputRequest[i] = formatFunctionToPromise(this.setting.config.promiseWrap, this.requestConfig.request[i]);
+                    outputRequest.request[i] = formatFunctionToPromise(this.setting.config.promiseWrap, this.requestConfig.request[i]);
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -388,59 +395,69 @@ var Request = function () {
                 }
             }
 
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var loopRequest = function loopRequest(mKeys, setting, pModule, resultRequest) {
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
 
-            try {
-                for (var _iterator2 = modulesKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var _i = _step2.value;
-
-                    var tmpRequest = {};
-                    var tmpKeys = Object.keys.call(null, this.requestConfig.modules[_i].request || {});
-                    var _iteratorNormalCompletion3 = true;
-                    var _didIteratorError3 = false;
-                    var _iteratorError3 = undefined;
-
-                    try {
-                        for (var _iterator3 = tmpKeys[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                            var j = _step3.value;
-
-                            tmpRequest[j] = formatFunctionToPromise(this.setting.modules[_i].promiseWrap, this.requestConfig.modules[_i].request[j]);
-                        }
-                    } catch (err) {
-                        _didIteratorError3 = true;
-                        _iteratorError3 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                                _iterator3.return();
-                            }
-                        } finally {
-                            if (_didIteratorError3) {
-                                throw _iteratorError3;
-                            }
-                        }
-                    }
-
-                    outputRequest[_i] = tmpRequest;
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
                 try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
+                    for (var _iterator2 = mKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var _i = _step2.value;
+
+                        var tmpRequest = {
+                            request: {},
+                            modules: {}
+                        };
+                        var tmpKeys = Object.keys.call(null, pModule[_i].request || {});
+                        var _iteratorNormalCompletion3 = true;
+                        var _didIteratorError3 = false;
+                        var _iteratorError3 = undefined;
+
+                        try {
+                            for (var _iterator3 = tmpKeys[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                                var j = _step3.value;
+
+                                tmpRequest.request[j] = formatFunctionToPromise(setting.modules[_i].config.promiseWrap, pModule[_i].request[j]);
+                            }
+                        } catch (err) {
+                            _didIteratorError3 = true;
+                            _iteratorError3 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                                    _iterator3.return();
+                                }
+                            } finally {
+                                if (_didIteratorError3) {
+                                    throw _iteratorError3;
+                                }
+                            }
+                        }
+
+                        resultRequest.modules[_i] = tmpRequest;
+                        var subModules = Object.keys.call(null, pModule[_i].modules || {});
+                        if (subModules.length) {
+                            loopRequest(subModules, setting.modules[_i], pModule[_i].modules, resultRequest.modules[_i]);
+                        }
                     }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
                 } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
                     }
                 }
-            }
-
+            };
+            loopRequest(modulesKeys, this.setting, this.requestConfig.modules, outputRequest);
             this.request = outputRequest;
+            console.log(this.request);
         }
     }, {
         key: 'getRequestConfig',
@@ -456,56 +473,67 @@ var Request = function () {
             keys.map(function (v) {
                 tmpConfig.config[v] = _this.requestConfig.config[v];
             });
-            var _iteratorNormalCompletion4 = true;
-            var _didIteratorError4 = false;
-            var _iteratorError4 = undefined;
+            var loopModules = function loopModules(modulesKeys, modules, pModules) {
+                var _iteratorNormalCompletion4 = true;
+                var _didIteratorError4 = false;
+                var _iteratorError4 = undefined;
 
-            try {
-                for (var _iterator4 = modulesKeys[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-                    var i = _step4.value;
-
-                    tmpConfig.modules[i] = Object.assign({}, tmpConfig.config);
-                    var tmpKeys = Object.keys.call(null, this.requestConfig.modules[i].config || {});
-                    var _iteratorNormalCompletion5 = true;
-                    var _didIteratorError5 = false;
-                    var _iteratorError5 = undefined;
-
-                    try {
-                        for (var _iterator5 = tmpKeys[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                            var j = _step5.value;
-
-                            tmpConfig.modules[i][j] = this.requestConfig.modules[i].config[j];
-                        }
-                    } catch (err) {
-                        _didIteratorError5 = true;
-                        _iteratorError5 = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                                _iterator5.return();
-                            }
-                        } finally {
-                            if (_didIteratorError5) {
-                                throw _iteratorError5;
-                            }
-                        }
-                    }
-                }
-            } catch (err) {
-                _didIteratorError4 = true;
-                _iteratorError4 = err;
-            } finally {
                 try {
-                    if (!_iteratorNormalCompletion4 && _iterator4.return) {
-                        _iterator4.return();
+                    for (var _iterator4 = modulesKeys[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                        var i = _step4.value;
+
+                        pModules.modules[i] = {
+                            config: Object.assign({}, pModules.config),
+                            modules: {}
+                        };
+                        var tmpKeys = Object.keys.call(null, modules[i].config || {});
+                        var _iteratorNormalCompletion5 = true;
+                        var _didIteratorError5 = false;
+                        var _iteratorError5 = undefined;
+
+                        try {
+                            for (var _iterator5 = tmpKeys[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                                var j = _step5.value;
+
+                                pModules.modules[i].config[j] = modules[i].config[j];
+                            }
+                            // 如果还有子module 循环
+                        } catch (err) {
+                            _didIteratorError5 = true;
+                            _iteratorError5 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                                    _iterator5.return();
+                                }
+                            } finally {
+                                if (_didIteratorError5) {
+                                    throw _iteratorError5;
+                                }
+                            }
+                        }
+
+                        var subModules = Object.keys.call(null, modules[i].modules || {});
+                        if (subModules.length) {
+                            loopModules(subModules, modules[i].modules, pModules.modules[i]);
+                        }
                     }
+                } catch (err) {
+                    _didIteratorError4 = true;
+                    _iteratorError4 = err;
                 } finally {
-                    if (_didIteratorError4) {
-                        throw _iteratorError4;
+                    try {
+                        if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                            _iterator4.return();
+                        }
+                    } finally {
+                        if (_didIteratorError4) {
+                            throw _iteratorError4;
+                        }
                     }
                 }
-            }
-
+            };
+            loopModules(modulesKeys, this.requestConfig.modules, tmpConfig);
             return tmpConfig;
         }
     }]);
