@@ -1,13 +1,9 @@
 /* eslint-disable */
-const city = require('./city');
 
-const clue = {
+const city = {
     state: {},
-    modules: {
-        city,
-    },
     request: {
-        getClueList(params) {
+        getCityList(params) {
             // 返回一个Promise
             // 能不能自动包成一个Promise
             return new Promise((resolve, reject) => {
@@ -16,7 +12,7 @@ const clue = {
                 }, 0);
             });
         },
-        getClueEnums(params, params2) {
+        getCityNum(params, params2) {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);
@@ -25,10 +21,7 @@ const clue = {
             // 返回一个Promise
         },
     },
-    config: {
-        promiseWrap: false,
-    },
 };
 
-module.exports = clue;
+module.exports = city;
 // export default clue;

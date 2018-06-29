@@ -351,9 +351,17 @@ window.onload = () => {
             }
         });
     };
-    const test20 = () => {};
+    const test20 = () => {
+        rModel
+            .chain()
+            .commit('wrap/city/getCityList', 33)
+            .commit('clue/city/getCityNum', 22)
+            .finish(data => {
+                console.log(data);
+            });
+    };
 
-    test18();
+    test20();
     // test17()
     //     .then(
     //         () => {

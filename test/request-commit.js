@@ -1,13 +1,13 @@
 /* eslint-disable */
 const assert = require('assert');
 it('basic usage', function(done) {
-    rModel.request
+    rModel.request.request
         .getNameById(1)
         .then(data => {
-            return rModel.request.enums(2, data);
+            return rModel.request.request.enums(2, data);
         })
         .then(data => {
-            return rModel.request.enums2(4, data);
+            return rModel.request.request.enums2(4, data);
         })
         .then(data => {
             result = data;
@@ -166,7 +166,19 @@ it('method commit with moodule', function(done) {
         });
 });
 
-it('method commit with moodule', function(done) {
+it('method commit with sub-moodule', function(done) {
+    rModel
+        .chain()
+        .commit('clue/city/getCityList', 33)
+        .commit('clue/city/getCityNum', 22)
+        .finish(data => {
+            result = data;
+            assert.deepEqual(result, [33, 22]);
+            done();
+        });
+});
+
+it('method commit with module action', function(done) {
     rModel
         .chain()
         .action('init', 1, 2)
