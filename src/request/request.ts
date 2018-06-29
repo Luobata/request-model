@@ -8,8 +8,20 @@ import Chain from 'Request/chain';
 
 // tslint:disable no-any no-unsafe-any
 
+// export interface IRequest {
+//     [key: string]: Function | IRequest;
+// }
 export interface IRequest {
-    [key: string]: Function | IRequest;
+    request: {
+        [key: string]: Function;
+    };
+    modules: {
+        [key: string]: IRequest;
+    };
+}
+
+export interface Irequest {
+    [key: string]: Function;
 }
 
 interface IModule {
@@ -31,7 +43,7 @@ export interface IcommitWrap {
 }
 
 export interface IRequestConfig {
-    request: IRequest;
+    request: Irequest;
     modules?: IModule;
     config?: IConfig;
     action?: IAction;
@@ -121,7 +133,10 @@ export default class Request {
     }
 
     private requestFormat(): void {
-        const outputRequest: IRequest = {};
+        const outputRequest: IRequest = {
+            request: {},
+            modules: {},
+        };
         const requestKes: string[] = Object.keys.call(
             null,
             this.requestConfig.request || {},
@@ -132,26 +147,55 @@ export default class Request {
         );
 
         for (const i of requestKes) {
-            outputRequest[i] = formatFunctionToPromise(
+            outputRequest.request[i] = formatFunctionToPromise(
                 this.setting.config.promiseWrap,
                 this.requestConfig.request[i],
             );
         }
 
-        for (const i of modulesKeys) {
-            const tmpRequest: IRequest = {};
-            const tmpKeys: string[] = Object.keys.call(
-                null,
-                this.requestConfig.modules[i].request || {},
-            );
-            for (const j of tmpKeys) {
-                tmpRequest[j] = formatFunctionToPromise(
-                    this.setting.modules[i].config.promiseWrap,
-                    <Function>this.requestConfig.modules[i].request[j],
+        const loopRequest: Function = (
+            mKeys: string[],
+            setting: IrequestConfig,
+            pModule: IModule,
+            resultRequest: IRequest,
+        ) => {
+            for (const i of mKeys) {
+                const tmpRequest: IRequest = {
+                    request: {},
+                    modules: {},
+                };
+                const tmpKeys: string[] = Object.keys.call(
+                    null,
+                    pModule[i].request || {},
                 );
+                for (const j of tmpKeys) {
+                    tmpRequest.request[j] = formatFunctionToPromise(
+                        setting.modules[i].config.promiseWrap,
+                        <Function>pModule[i].request[j],
+                    );
+                }
+                resultRequest.modules[i] = tmpRequest;
+
+                const subModules: string[] = Object.keys.call(
+                    null,
+                    pModule[i].modules || {},
+                );
+                if (subModules.length) {
+                    loopRequest(
+                        subModules,
+                        setting.modules[i],
+                        pModule[i].modules,
+                        resultRequest.modules[i],
+                    );
+                }
             }
-            outputRequest[i] = tmpRequest;
-        }
+        };
+        loopRequest(
+            modulesKeys,
+            this.setting,
+            this.requestConfig.modules,
+            outputRequest,
+        );
 
         this.request = outputRequest;
         console.log(this.request);
