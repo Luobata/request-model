@@ -56,18 +56,18 @@ const rModel = new RequestModel({
 
 ##### Construction options
 
-*   **request**:
-    
+-   **request**:
+
     type `{ [type: string]: Function }`
 
-*   **config**: config for requestModel, the sub module config will extends its parent config.
+-   **config**: config for requestModel, the sub module config will extends its parent config.
 
     | key         | type    | default | description                              |
     | :---------- | :------ | :------ | :--------------------------------------- |
     | promiseWrap | boolean | false   | Wrap your request fucntion with Promise. |
 
-*   **module**: sub modules to request-model(only one hierarchy is supported now)
-    
+-   **module**: sub modules to request-model(**multistage sub modules support now**)
+
     type `[type: string]: another request-model options like`
 
     ```js
@@ -75,15 +75,18 @@ const rModel = new RequestModel({
       key: {
         request: {
           [string]: Function
+        },
+        modules: {
+            ...
         }
       }
     }
     ```
 
-*   **action**: the collection of the commit.
-    
+-   **action**: the collection of the commit.
+
     type `[type: string]: Function`
-    
+
     params `(chain: Chain, ...args: any[])`
 
     ```js
@@ -98,19 +101,22 @@ const rModel = new RequestModel({
 
 #### Methods
 
-*   **chain**
-    
+-   **chain**
+
     Use to start the chain usage.
-    
+
     return `new Chain()`
-*   commitWrap
-    
+
+-   commitWrap
+
     params `key: string (the function name in the constructor request)`
-*   commitAll
-    
+
+-   commitAll
+
     params `The return Array of commitWrap`
-    
+
     etc:
+
     ```js
     rModel
         .chain()
@@ -133,13 +139,13 @@ generator after requestModel.chain()
 
 #### Methods
 
-*   **commit**
+-   **commit**
 
     params `key: string`
 
     return `Chain`
 
-*   then
+-   then
 
     join your commit chain with another Function.
 
@@ -147,7 +153,7 @@ generator after requestModel.chain()
 
     return `Chain`
 
-*   finish
+-   finish
 
     add a finish Function will resolve after all the commit.
 
@@ -155,7 +161,7 @@ generator after requestModel.chain()
 
     return `Chain`
 
-*   catch
+-   catch
 
     add a error catch Functin.
 
