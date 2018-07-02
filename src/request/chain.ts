@@ -151,7 +151,12 @@ export default class Chain {
         return this;
     }
 
-    // tslint:disable no-reserved-keywords
+    // tslint:disable-next-line no-reserved-keywords
+    public finally(resolve: Function, reject?: Function): Chain {
+        return this.finish(resolve, reject);
+    }
+
+    // tslint:disable-next-line no-reserved-keywords
     public catch(reject: Function): Chain {
         const noop: Function = (): void => {};
         if (!this.waitList.length && !this.deferItem) {
@@ -162,7 +167,6 @@ export default class Chain {
 
         return this;
     }
-    // tslint:enable no-reserved-keywords
 
     public action(key: string, ...args: any[]): Chain {
         return this.actionFun[key].call(null, this, ...args);
