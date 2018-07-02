@@ -157,7 +157,14 @@ var Chain = function () {
             }
             return this;
         }
-        // tslint:disable no-reserved-keywords
+        // tslint:disable-next-line no-reserved-keywords
+
+    }, {
+        key: 'finally',
+        value: function _finally(resolve, reject) {
+            return this.finish(resolve, reject);
+        }
+        // tslint:disable-next-line no-reserved-keywords
 
     }, {
         key: 'catch',
@@ -170,8 +177,6 @@ var Chain = function () {
             }
             return this;
         }
-        // tslint:enable no-reserved-keywords
-
     }, {
         key: 'action',
         value: function action(key) {
