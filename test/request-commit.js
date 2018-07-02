@@ -27,6 +27,20 @@ it('chain usage', function(done) {
             done();
         });
 });
+
+it('chain usage with finally', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .commit('enums', 2)
+        .commit('enums2', 4)
+        .finally(data => {
+            result = data;
+            assert.deepEqual(result, [1, [2, 1], 4]);
+            done();
+        });
+});
+
 it('method then usage with no-promise return', function(done) {
     rModel
         .chain()
