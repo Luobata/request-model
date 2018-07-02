@@ -153,7 +153,7 @@ generator after requestModel.chain()
 
     return `Chain`
 
--   finish
+-   finish / finally (same usage)
 
     add a finish Function will resolve after all the commit.
 
