@@ -336,7 +336,6 @@ var Request = function () {
 
         this.requestConfig = request;
         this.setting = this.getRequestConfig();
-        console.log(this.setting);
         this.action = this.requestConfig.action;
         this.requestFormat();
     }
@@ -462,7 +461,6 @@ var Request = function () {
             };
             loopRequest(modulesKeys, this.setting, this.requestConfig.modules, outputRequest);
             this.request = outputRequest;
-            console.log(this.request);
         }
     }, {
         key: 'getRequestConfig',
