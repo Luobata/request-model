@@ -106,7 +106,21 @@ var Chain = function () {
                 return this;
             }
             if (!hasRequest(key, this.request)) {
-                throw new Error('can not find matched ' + key + ' function');
+                var keyStr = '';
+                if (isArray(key)) {
+                    if (isCommitObj(key[0])) {
+                        key.map(function (v) {
+                            return keyStr += ' ' + v.handler;
+                        });
+                    } else {
+                        key.map(function (v) {
+                            return keyStr += ' ' + v;
+                        });
+                    }
+                } else {
+                    keyStr = key;
+                }
+                throw new Error('can not find matched commit string(one or all): ' + keyStr);
             }
             if (this.deferItem) {
                 this.waitList.push({
