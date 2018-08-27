@@ -354,28 +354,13 @@ window.onload = () => {
     const test20 = () => {
         rModel
             .chain()
-<<<<<<< HEAD
-            .commit('wrap/city/getCityList', 33)
             .commit('clue/city/getCityNum', 22)
             .finish(data => {
                 console.log(data);
             });
-=======
-            .commit([
-                {
-                    handler: 'enums4',
-                    args: [4],
-                },
-                {
-                    handler: 'enums',
-                    args: [2],
-                },
-            ])
-            .commit('enums');
->>>>>>> add: finally test case
     };
 
-    test20();
+    test15();
     // test17()
     //     .then(
     //         () => {

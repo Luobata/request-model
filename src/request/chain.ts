@@ -90,7 +90,21 @@ export default class Chain {
             return this;
         }
         if (!hasRequest(key, this.request)) {
-            throw new Error(`can not find matched ${key} function`);
+            let keyStr: string = '';
+            if (isArray(key)) {
+                if (isCommitObj(key[0])) {
+                    (<IcommitObj[]>key).map(
+                        (v: IcommitObj) => (keyStr += ` ${v.handler}`),
+                    );
+                } else {
+                    (<string[]>key).map((v: string) => (keyStr += ` ${v}`));
+                }
+            } else {
+                keyStr = <string>key;
+            }
+            throw new Error(
+                `can not find matched commit string(one or all): ${keyStr}`,
+            );
         }
 
         if (this.deferItem) {
