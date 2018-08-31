@@ -7,7 +7,7 @@
     "types": "src/index.d.ts",
     "scripts": {
         "build": "node build/build.js",
-        "build:esm": "rollup -c build/rollup.config.js & rm -rf .rpt2_cache",
+        "build:esm": "rollup -c build/rollup.config.js && rm -rf .rpt2_cache",
         "dev:build": "rollup -w -c build/rollup.config.js",
         "dev:test": "node build/dev-server.js",
         "test": "cross-env NODE_ENV=test mocha --compilers js:babel-core/register test/test.js",

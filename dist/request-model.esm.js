@@ -67,11 +67,19 @@ var getArgs = function getArgs(v) {
 };
 var hasRequest = function hasRequest(key, request) {
     if (isArray(key)) {
-        return key.filter(function (v) {
-            return !!getFunctionInRequest(getKey(v), request);
-        }).length === key.length;
+        // (<(string | IcommitObj)[]>key).filter(
+        //     (v: string | IcommitObj): boolean =>
+        //         !!getFunctionInRequest(getKey(v), request),
+        // ).length === (<(string | IcommitObj)[]>key).length
+        var keys = key.filter(function (v) {
+            return !getFunctionInRequest(getKey(v), request);
+        });
+        return keys.length ? keys.map(function (v) {
+            return v.handler ? v.handler : v;
+        }).join(',') : '';
     } else {
-        return !!getFunctionInRequest(key, request);
+        return getFunctionInRequest(key, request) ? '' : key;
+        // return !!getFunctionInRequest(<string>key, request);
     }
 };
 var getAll = function getAll(key, request, args) {
@@ -105,22 +113,9 @@ var Chain = function () {
             if (this.unResolveRejection) {
                 return this;
             }
-            if (!hasRequest(key, this.request)) {
-                var keyStr = '';
-                if (isArray(key)) {
-                    if (isCommitObj(key[0])) {
-                        key.map(function (v) {
-                            return keyStr += ' ' + v.handler;
-                        });
-                    } else {
-                        key.map(function (v) {
-                            return keyStr += ' ' + v;
-                        });
-                    }
-                } else {
-                    keyStr = key;
-                }
-                throw new Error('can not find matched commit string(one or all): ' + keyStr);
+            var keyStr = hasRequest(key, this.request);
+            if (keyStr) {
+                throw new Error('can not find matched commit key: ' + keyStr);
             }
             if (this.deferItem) {
                 this.waitList.push({
