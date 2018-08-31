@@ -271,7 +271,7 @@ window.onload = () => {
             .then(data => {
                 // return rModel.commitWrap('reject', 3);
                 return rModel.commitAll([
-                    rModel.commitWrap('enums2', 2),
+                    rModel.commitWrap('enums', 2),
                     rModel.commitWrap('reject', 4),
                 ]);
             })

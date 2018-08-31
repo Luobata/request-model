@@ -4,8 +4,6 @@ const city = {
     state: {},
     request: {
         getCityList(params) {
-            // 返回一个Promise
-            // 能不能自动包成一个Promise
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                     resolve(params);

@@ -41,16 +41,25 @@ const getArgs: Function = (v: deferKeyItem): any[] => {
     return isCommitObj(v) ? (<IcommitObj>v).args : [];
 };
 
-const hasRequest: Function = (key: deferKey, request: IRequest): boolean => {
+const hasRequest: Function = (key: deferKey, request: IRequest): string => {
     if (isArray(key)) {
-        return (
-            (<(string | IcommitObj)[]>key).filter(
-                (v: string | IcommitObj): boolean =>
-                    !!getFunctionInRequest(getKey(v), request),
-            ).length === (<(string | IcommitObj)[]>key).length
+        // (<(string | IcommitObj)[]>key).filter(
+        //     (v: string | IcommitObj): boolean =>
+        //         !!getFunctionInRequest(getKey(v), request),
+        // ).length === (<(string | IcommitObj)[]>key).length
+        const keys: (string | IcommitObj)[] = (<(string | IcommitObj)[]>(
+            key
+        )).filter(
+            (v: string | IcommitObj): boolean =>
+                !getFunctionInRequest(getKey(v), request),
         );
+
+        return keys.length
+            ? keys.map((v: IcommitObj) => (v.handler ? v.handler : v)).join(',')
+            : '';
     } else {
-        return !!getFunctionInRequest(<string>key, request);
+        return getFunctionInRequest(<string>key, request) ? '' : <string>key;
+        // return !!getFunctionInRequest(<string>key, request);
     }
 };
 
@@ -89,22 +98,9 @@ export default class Chain {
         if (this.unResolveRejection) {
             return this;
         }
-        if (!hasRequest(key, this.request)) {
-            let keyStr: string = '';
-            if (isArray(key)) {
-                if (isCommitObj(key[0])) {
-                    (<IcommitObj[]>key).map(
-                        (v: IcommitObj) => (keyStr += ` ${v.handler}`),
-                    );
-                } else {
-                    (<string[]>key).map((v: string) => (keyStr += ` ${v}`));
-                }
-            } else {
-                keyStr = <string>key;
-            }
-            throw new Error(
-                `can not find matched commit string(one or all): ${keyStr}`,
-            );
+        const keyStr: string = hasRequest(key, this.request);
+        if (keyStr) {
+            throw new Error(`can not find matched commit key: ${keyStr}`);
         }
 
         if (this.deferItem) {
