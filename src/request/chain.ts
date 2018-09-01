@@ -19,6 +19,7 @@ type deferKeyItem = string | IcommitObj;
 interface Ithen {
     resolve: Function;
     reject: Function;
+    always?: Function;
 }
 
 interface IcommitObj {
@@ -85,6 +86,7 @@ export default class Chain {
     private resultList: any[];
     private resolve: Function;
     private reject: Function;
+    private always: Function;
     private unResolveRejection: any;
 
     constructor(request: IRequest, action: IAction) {
@@ -137,7 +139,11 @@ export default class Chain {
         return this;
     }
 
-    public then(resolve: Function, reject?: Function): Chain {
+    public then(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain {
         if (this.deferItem) {
             this.waitList.push({
                 resolve,
@@ -150,7 +156,11 @@ export default class Chain {
         return this;
     }
 
-    public finish(resolve: Function, reject?: Function): Chain {
+    public finish(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain {
         if (!this.waitList.length && !this.deferItem) {
             this.innerResolve({ resolve, reject });
         } else {
@@ -162,7 +172,11 @@ export default class Chain {
     }
 
     // tslint:disable-next-line no-reserved-keywords
-    public finally(resolve: Function, reject?: Function): Chain {
+    public finally(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain {
         return this.finish(resolve, reject);
     }
 
