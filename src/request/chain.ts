@@ -19,7 +19,6 @@ type deferKeyItem = string | IcommitObj;
 interface Ithen {
     resolve: Function;
     reject: Function;
-    always?: Function;
 }
 
 interface IcommitObj {
@@ -75,6 +74,9 @@ const getAll: Function = (
     );
 };
 
+// tslint:disable-next-line no-empty
+const noop: Function = (): void => {};
+
 /**
  * default class Chain
  */
@@ -86,7 +88,7 @@ export default class Chain {
     private resultList: any[];
     private resolve: Function;
     private reject: Function;
-    private always: Function;
+    private alwaysFn: Function;
     private unResolveRejection: any;
 
     constructor(request: IRequest, action: IAction) {
@@ -139,11 +141,7 @@ export default class Chain {
         return this;
     }
 
-    public then(
-        resolve: Function,
-        reject?: Function,
-        always?: Function,
-    ): Chain {
+    public then(resolve: Function, reject?: Function): Chain {
         if (this.deferItem) {
             this.waitList.push({
                 resolve,
@@ -156,11 +154,7 @@ export default class Chain {
         return this;
     }
 
-    public finish(
-        resolve: Function,
-        reject?: Function,
-        always?: Function,
-    ): Chain {
+    public finish(resolve: Function, reject?: Function): Chain {
         if (!this.waitList.length && !this.deferItem) {
             this.innerResolve({ resolve, reject });
         } else {
@@ -172,22 +166,23 @@ export default class Chain {
     }
 
     // tslint:disable-next-line no-reserved-keywords
-    public finally(
-        resolve: Function,
-        reject?: Function,
-        always?: Function,
-    ): Chain {
+    public finally(resolve: Function, reject?: Function): Chain {
         return this.finish(resolve, reject);
     }
 
     // tslint:disable-next-line no-reserved-keywords
     public catch(reject: Function): Chain {
-        const noop: Function = (): void => {};
         if (!this.waitList.length && !this.deferItem) {
             this.innerResolve({ resolve: noop, reject });
         } else {
             this.reject = reject;
         }
+
+        return this;
+    }
+
+    public always(always: Function): Chain {
+        this.alwaysFn = always;
 
         return this;
     }
@@ -201,7 +196,6 @@ export default class Chain {
         if (this.waitList.length) {
             const keyObj: Idefer | Ithen = this.waitList.shift();
             this.deferItem = null;
-            // if ('key' in keyObj) {
             if (isIdefer(keyObj)) {
                 // object Idefer
                 this.commit(keyObj.key, ...keyObj.args, result);
@@ -213,6 +207,8 @@ export default class Chain {
             if (this.resolve) {
                 this.resolve(this.resultList);
             }
+
+            this.innerAlways();
         }
     }
 
@@ -295,10 +291,19 @@ export default class Chain {
             }
             this.deferItem = null;
             reject(error);
+            this.innerAlways();
 
             return true;
         } else {
+            this.innerAlways();
+
             return false;
+        }
+    }
+
+    private innerAlways(): void {
+        if (this.alwaysFn) {
+            this.alwaysFn();
         }
     }
 }

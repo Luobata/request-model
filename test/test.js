@@ -86,4 +86,7 @@ describe('request-model', () => {
     describe('test error catch', () => {
         require('./request-catch');
     });
+    describe('test always', () => {
+        require('./request-always');
+    });
 });

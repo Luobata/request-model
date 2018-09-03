@@ -359,8 +359,34 @@ window.onload = () => {
                 console.log(data);
             });
     };
+    const test21 = () => {
+        rModel
+            .chain()
+            .always(() => {
+                console.log(111);
+            })
+            .commit('getNameById', 1)
+            .then(data => {})
+            .then(
+                data => {
+                    console.log(data);
+                },
+                data => {
+                    console.log(data);
+                },
+            )
+            .then(
+                data => {
+                    console.log(data);
+                },
+                data => {
+                    console.log(data);
+                },
+            )
+            .commit('getNameById', 1);
+    };
 
-    test15();
+    test21();
     // test17()
     //     .then(
     //         () => {

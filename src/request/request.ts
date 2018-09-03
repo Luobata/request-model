@@ -157,7 +157,7 @@ export default class Request {
             setting: IrequestConfig,
             pModule: IModule,
             resultRequest: IRequest,
-        ) => {
+        ): void => {
             for (const i of mKeys) {
                 const tmpRequest: IRequest = {
                     request: {},
@@ -219,12 +219,12 @@ export default class Request {
             },
         );
 
-        const loopModules = (
-            modulesKeys: string[],
+        const loopModules: Function = (
+            modulesKey: string[],
             modules: IModule,
             pModules: IrequestConfig,
-        ) => {
-            for (const i of modulesKeys) {
+        ): void => {
+            for (const i of modulesKey) {
                 pModules.modules[i] = {
                     config: { ...pModules.config },
                     modules: {},
