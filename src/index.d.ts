@@ -18,4 +18,5 @@ export declare class Chain {
     public then(resolve: Function, reject: Function): Chain;
     public finish(resolve: Function, reject: Function): Chain;
     public catch(reject: Function): Chain;
+    public always(always: Function): Chain;
 }
