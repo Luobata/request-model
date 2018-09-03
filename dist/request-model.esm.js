@@ -87,6 +87,8 @@ var getAll = function getAll(key, request, args) {
         return getFunctionInRequest(getKey(v), request).apply(undefined, _toConsumableArray(getArgs(v)).concat(_toConsumableArray(args)));
     });
 };
+// tslint:disable-next-line no-empty
+var noop = function noop() {};
 /**
  * default class Chain
  */
@@ -178,12 +180,17 @@ var Chain = function () {
     }, {
         key: 'catch',
         value: function _catch(reject) {
-            var noop = function noop() {};
             if (!this.waitList.length && !this.deferItem) {
                 this.innerResolve({ resolve: noop, reject: reject });
             } else {
                 this.reject = reject;
             }
+            return this;
+        }
+    }, {
+        key: 'always',
+        value: function always(_always) {
+            this.alwaysFn = _always;
             return this;
         }
     }, {
@@ -204,7 +211,6 @@ var Chain = function () {
             if (this.waitList.length) {
                 var keyObj = this.waitList.shift();
                 this.deferItem = null;
-                // if ('key' in keyObj) {
                 if (isIdefer(keyObj)) {
                     // object Idefer
                     this.commit.apply(this, [keyObj.key].concat(_toConsumableArray(keyObj.args), [result]));
@@ -216,6 +222,7 @@ var Chain = function () {
                 if (this.resolve) {
                     this.resolve(this.resultList);
                 }
+                this.innerAlways();
             }
         }
     }, {
@@ -293,9 +300,18 @@ var Chain = function () {
                 }
                 this.deferItem = null;
                 reject(error);
+                this.innerAlways();
                 return true;
             } else {
+                this.innerAlways();
                 return false;
+            }
+        }
+    }, {
+        key: 'innerAlways',
+        value: function innerAlways() {
+            if (this.alwaysFn) {
+                this.alwaysFn();
             }
         }
     }]);
@@ -485,13 +501,13 @@ var Request = function () {
             keys.map(function (v) {
                 tmpConfig.config[v] = _this.requestConfig.config[v];
             });
-            var loopModules = function loopModules(modulesKeys, modules, pModules) {
+            var loopModules = function loopModules(modulesKey, modules, pModules) {
                 var _iteratorNormalCompletion4 = true;
                 var _didIteratorError4 = false;
                 var _iteratorError4 = undefined;
 
                 try {
-                    for (var _iterator4 = modulesKeys[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                    for (var _iterator4 = modulesKey[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                         var i = _step4.value;
 
                         pModules.modules[i] = {

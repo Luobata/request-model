@@ -168,3 +168,12 @@ generator after requestModel.chain()
     params `(reject: Function)`
 
     return `Chain`
+
+-   always
+
+    add a always Functin. **It will be called when after last resolve or reject(also resolve and reject could be ampty)**
+    **not support usage with always only(without commit/then)**
+
+    params `(alwaysFn: Function)`
+
+    return `Chain`
