@@ -19,6 +19,7 @@ type deferKeyItem = string | IcommitObj;
 interface Ithen {
     resolve: Function;
     reject: Function;
+    always?: Function;
 }
 
 interface IcommitObj {
@@ -141,22 +142,31 @@ export default class Chain {
         return this;
     }
 
-    public then(resolve: Function, reject?: Function): Chain {
+    public then(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain {
         if (this.deferItem) {
             this.waitList.push({
                 resolve,
                 reject,
+                always,
             });
         } else {
-            this.innerResolve({ resolve, reject });
+            this.innerResolve({ resolve, reject, always });
         }
 
         return this;
     }
 
-    public finish(resolve: Function, reject?: Function): Chain {
+    public finish(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain {
         if (!this.waitList.length && !this.deferItem) {
-            this.innerResolve({ resolve, reject });
+            this.innerResolve({ resolve, reject, always });
         } else {
             this.resolve = resolve;
             this.reject = reject;
@@ -166,8 +176,12 @@ export default class Chain {
     }
 
     // tslint:disable-next-line no-reserved-keywords
-    public finally(resolve: Function, reject?: Function): Chain {
-        return this.finish(resolve, reject);
+    public finally(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain {
+        return this.finish(resolve, reject, always);
     }
 
     // tslint:disable-next-line no-reserved-keywords
@@ -218,8 +232,13 @@ export default class Chain {
         if (this.unResolveRejection) {
             if (then.reject) {
                 then.reject(this.unResolveRejection);
+                if (then.always) {
+                    then.always();
+                }
                 this.unResolveRejection = null;
-            } else if (this.innerRejection(this.unResolveRejection)) {
+            } else if (
+                this.innerRejection(this.unResolveRejection, then.always)
+            ) {
                 this.unResolveRejection = null;
             }
 
@@ -227,8 +246,11 @@ export default class Chain {
         } else {
             try {
                 deferItem = then.resolve(result);
+                if (then.always) {
+                    then.always();
+                }
             } catch (e) {
-                if (!this.innerRejection(e)) {
+                if (!this.innerRejection(e, then.always)) {
                     this.unResolveRejection = e;
                 }
 
@@ -243,7 +265,7 @@ export default class Chain {
                     this.commitChain(data);
                 },
                 (error: any) => {
-                    this.innerRejection(error);
+                    this.innerRejection(error, deferItem.always);
                 },
             );
         } else if (isArray(deferItem)) {
@@ -265,8 +287,10 @@ export default class Chain {
         return this;
     }
 
+    // fn may be the always fn
     private innerRejection(error: any, fn?: Function): boolean {
         let reject!: Function;
+        let always: Function = fn;
         // if (this.waitList.length && !isIdefer(this.waitList[0])) {
         if (this.waitList.length) {
             let index: number = 0;
@@ -276,6 +300,7 @@ export default class Chain {
                     (<Ithen>this.waitList[i]).reject
                 ) {
                     reject = (<Ithen>this.waitList[i]).reject;
+                    always = (<Ithen>this.waitList[i]).always;
                     index = i;
                     break;
                 }
@@ -286,11 +311,11 @@ export default class Chain {
             reject = this.reject;
         }
         if (reject) {
-            if (fn) {
-                fn();
-            }
             this.deferItem = null;
             reject(error);
+            if (always) {
+                always();
+            }
             this.innerAlways();
 
             return true;

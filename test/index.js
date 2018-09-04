@@ -367,20 +367,27 @@ window.onload = () => {
             })
             .commit('getNameById', 1)
             .then(data => {})
+            // .commit('reject', 22)
             .then(
                 data => {
-                    console.log(data);
+                    console.log('s1');
                 },
                 data => {
-                    console.log(data);
+                    console.log('error', data);
+                },
+                data => {
+                    console.log(2);
                 },
             )
             .then(
                 data => {
-                    console.log(data);
+                    console.log('s2');
                 },
                 data => {
                     console.log(data);
+                },
+                data => {
+                    console.log(3);
                 },
             )
             .commit('getNameById', 1);
