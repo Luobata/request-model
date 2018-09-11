@@ -111,6 +111,9 @@ export default class Request {
         return new Chain(this.request, this.action);
     }
 
+    // add request
+    public add(): void {}
+
     public commitWrap(key: string, ...args: any[]): object {
         return {
             [commitToken]: true,
