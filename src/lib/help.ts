@@ -22,3 +22,11 @@ export const isPromise: Function = (obj: any): boolean => {
         return false;
     }
 };
+
+export const getFunctionName: Function = (input: Function): string => {
+    const result: RegExpExecArray = /^function\s+([\w\$]+)\s*\(/.exec(
+        input.toString(),
+    );
+
+    return result ? result[1] : '';
+};

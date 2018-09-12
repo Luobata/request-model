@@ -5,6 +5,7 @@
 import { commitToken } from 'Lib/conf';
 import logger from 'Lib/logger';
 import Chain from 'Request/chain';
+import Collection from 'Request/collection';
 
 // tslint:disable no-any no-unsafe-any
 
@@ -107,8 +108,16 @@ export default class Request {
         this.requestFormat();
     }
 
+    public static PROMISEWRAP(fn: Function): Function {
+        return formatFunctionToPromise(true, fn);
+    }
+
     public chain(): Chain {
         return new Chain(this.request, this.action);
+    }
+
+    public collection(): Collection {
+        return new Collection();
     }
 
     // add request

@@ -44,10 +44,6 @@ const getArgs: Function = (v: deferKeyItem): any[] => {
 
 const hasRequest: Function = (key: deferKey, request: IRequest): string => {
     if (isArray(key)) {
-        // (<(string | IcommitObj)[]>key).filter(
-        //     (v: string | IcommitObj): boolean =>
-        //         !!getFunctionInRequest(getKey(v), request),
-        // ).length === (<(string | IcommitObj)[]>key).length
         const keys: (string | IcommitObj)[] = (<(string | IcommitObj)[]>(
             key
         )).filter(
@@ -60,7 +56,6 @@ const hasRequest: Function = (key: deferKey, request: IRequest): string => {
             : '';
     } else {
         return getFunctionInRequest(<string>key, request) ? '' : <string>key;
-        // return !!getFunctionInRequest(<string>key, request);
     }
 };
 
