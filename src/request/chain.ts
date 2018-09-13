@@ -77,7 +77,7 @@ const noop: Function = (): void => {};
  * default class Chain
  */
 export default class Chain {
-    private request: IRequest;
+    protected request: IRequest;
     private actionFun: IAction;
     private deferItem: Promise<any> | null;
     private waitList: (Idefer | Ithen)[];

@@ -20,14 +20,17 @@ export default class Collection extends Chain {
             throw new Error('The input function must have a name.');
         }
 
+        const name: string = key || getFunctionName(fn);
+        this.request.request[name] = fn;
+
         return this;
     }
 
-    public commit(key: string): Collection {
-        return this;
-    }
+    // public commit(key: string): Collection {
+    //     return this;
+    // }
 
-    public then(): Collection {
-        return this;
-    }
+    // public then(): Collection {
+    //     return this;
+    // }
 }

@@ -12,7 +12,7 @@ export const isObject: Function = (obj: any): boolean => {
     return Object.prototype.toString.call(obj) === '[object Object]';
 };
 export const isFunction: Function = (obj: any): obj is Function => {
-    return Function.prototype.toString.call(obj) === '[object Function]';
+    return Object.prototype.toString.call(obj) === '[object Function]';
 };
 
 export const isPromise: Function = (obj: any): boolean => {
