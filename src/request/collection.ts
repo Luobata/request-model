@@ -25,12 +25,4 @@ export default class Collection extends Chain {
 
         return this;
     }
-
-    // public commit(key: string): Collection {
-    //     return this;
-    // }
-
-    // public then(): Collection {
-    //     return this;
-    // }
 }

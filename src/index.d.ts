@@ -6,7 +6,9 @@ import { IRequestConfig, IcommitWrap } from 'Request/request';
 export declare class RequestModel {
     constructor(request: IRequestConfig);
 
+    public static PROMISEWRAP(fn: Function): Function;
     public chain(): Chain;
+    public collection(): Collection;
     public commitWrap(key: string, ...args: any[]): object;
     public commitAll(commitWrap: IcommitWrap[]): object[];
 }
@@ -19,4 +21,8 @@ export declare class Chain {
     public finish(resolve: Function, reject: Function): Chain;
     public catch(reject: Function): Chain;
     public always(always: Function): Chain;
+}
+
+export declare class Collection extends Chain {
+    add(fn: Function, key?: string): Collection;
 }
