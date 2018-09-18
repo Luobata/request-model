@@ -20,12 +20,19 @@ var isArray = function isArray(obj) {
 var isObject = function isObject(obj) {
     return Object.prototype.toString.call(obj) === '[object Object]';
 };
+var isFunction = function isFunction(obj) {
+    return Object.prototype.toString.call(obj) === '[object Function]';
+};
 var isPromise = function isPromise(obj) {
     try {
         return typeof obj.then === 'function';
     } catch (e) {
         return false;
     }
+};
+var getFunctionName = function getFunctionName(input) {
+    var result = /^function\s+([\w\$]+)\s*\(/.exec(input.toString());
+    return result ? result[1] : '';
 };
 
 var getFunctionInRequest = function getFunctionInRequest(key, request) {
@@ -67,10 +74,6 @@ var getArgs = function getArgs(v) {
 };
 var hasRequest = function hasRequest(key, request) {
     if (isArray(key)) {
-        // (<(string | IcommitObj)[]>key).filter(
-        //     (v: string | IcommitObj): boolean =>
-        //         !!getFunctionInRequest(getKey(v), request),
-        // ).length === (<(string | IcommitObj)[]>key).length
         var keys = key.filter(function (v) {
             return !getFunctionInRequest(getKey(v), request);
         });
@@ -79,7 +82,6 @@ var hasRequest = function hasRequest(key, request) {
         }).join(',') : '';
     } else {
         return getFunctionInRequest(key, request) ? '' : key;
-        // return !!getFunctionInRequest(<string>key, request);
     }
 };
 var getAll = function getAll(key, request, args) {
@@ -146,22 +148,23 @@ var Chain = function () {
         }
     }, {
         key: 'then',
-        value: function then(resolve, reject) {
+        value: function then(resolve, reject, always) {
             if (this.deferItem) {
                 this.waitList.push({
                     resolve: resolve,
-                    reject: reject
+                    reject: reject,
+                    always: always
                 });
             } else {
-                this.innerResolve({ resolve: resolve, reject: reject });
+                this.innerResolve({ resolve: resolve, reject: reject, always: always });
             }
             return this;
         }
     }, {
         key: 'finish',
-        value: function finish(resolve, reject) {
+        value: function finish(resolve, reject, always) {
             if (!this.waitList.length && !this.deferItem) {
-                this.innerResolve({ resolve: resolve, reject: reject });
+                this.innerResolve({ resolve: resolve, reject: reject, always: always });
             } else {
                 this.resolve = resolve;
                 this.reject = reject;
@@ -172,8 +175,8 @@ var Chain = function () {
 
     }, {
         key: 'finally',
-        value: function _finally(resolve, reject) {
-            return this.finish(resolve, reject);
+        value: function _finally(resolve, reject, always) {
+            return this.finish(resolve, reject, always);
         }
         // tslint:disable-next-line no-reserved-keywords
 
@@ -235,16 +238,22 @@ var Chain = function () {
             if (this.unResolveRejection) {
                 if (then.reject) {
                     then.reject(this.unResolveRejection);
+                    if (then.always) {
+                        then.always();
+                    }
                     this.unResolveRejection = null;
-                } else if (this.innerRejection(this.unResolveRejection)) {
+                } else if (this.innerRejection(this.unResolveRejection, then.always)) {
                     this.unResolveRejection = null;
                 }
                 return this;
             } else {
                 try {
                     deferItem = then.resolve(result);
+                    if (then.always) {
+                        then.always();
+                    }
                 } catch (e) {
-                    if (!this.innerRejection(e)) {
+                    if (!this.innerRejection(e, then.always)) {
                         this.unResolveRejection = e;
                     }
                     return this;
@@ -256,7 +265,7 @@ var Chain = function () {
                 deferItem.then(function (data) {
                     _this2.commitChain(data);
                 }, function (error) {
-                    _this2.innerRejection(error);
+                    _this2.innerRejection(error, deferItem.always);
                 });
             } else if (isArray(deferItem)) {
                 // 暂时可以认为一定是 commitAll 包装
@@ -275,16 +284,20 @@ var Chain = function () {
             }
             return this;
         }
+        // fn may be the always fn
+
     }, {
         key: 'innerRejection',
         value: function innerRejection(error, fn) {
             var reject = void 0;
+            var always = fn;
             // if (this.waitList.length && !isIdefer(this.waitList[0])) {
             if (this.waitList.length) {
                 var index = 0;
                 for (var i = 0; i < this.waitList.length; i = i + 1) {
                     if (!isIdefer(this.waitList[i]) && this.waitList[i].reject) {
                         reject = this.waitList[i].reject;
+                        always = this.waitList[i].always;
                         index = i;
                         break;
                     }
@@ -295,11 +308,11 @@ var Chain = function () {
                 reject = this.reject;
             }
             if (reject) {
-                if (fn) {
-                    fn();
-                }
                 this.deferItem = null;
                 reject(error);
+                if (always) {
+                    always();
+                }
                 this.innerAlways();
                 return true;
             } else {
@@ -321,11 +334,47 @@ var Chain = function () {
 
 var _createClass$1 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Collection = function (_Chain) {
+    _inherits(Collection, _Chain);
+
+    function Collection() {
+        _classCallCheck$1(this, Collection);
+
+        return _possibleConstructorReturn(this, (Collection.__proto__ || Object.getPrototypeOf(Collection)).call(this, { request: {}, modules: {} }, {}));
+    }
+
+    _createClass$1(Collection, [{
+        key: 'add',
+        value: function add(fn, key) {
+            // may use for js
+            if (!isFunction(fn)) {
+                throw new Error('The input must be a Function.');
+            }
+            if (!getFunctionName(fn) && !key) {
+                throw new Error('The input function must have a name.');
+            }
+            var name = key || getFunctionName(fn);
+            this.request.request[name] = fn;
+            return this;
+        }
+    }]);
+
+    return Collection;
+}(Chain);
+
+var _createClass$2 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _toConsumableArray$1(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _classCallCheck$1(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 var defaultConfig = {
     promiseWrap: false
 };
@@ -357,7 +406,7 @@ var formatFunctionToPromise = function formatFunctionToPromise(flag, fn) {
 
 var Request = function () {
     function Request(request) {
-        _classCallCheck$1(this, Request);
+        _classCallCheck$2(this, Request);
 
         this.requestConfig = request;
         this.setting = this.getRequestConfig();
@@ -365,11 +414,21 @@ var Request = function () {
         this.requestFormat();
     }
 
-    _createClass$1(Request, [{
+    _createClass$2(Request, [{
         key: 'chain',
         value: function chain() {
             return new Chain(this.request, this.action);
         }
+    }, {
+        key: 'collection',
+        value: function collection() {
+            return new Collection();
+        }
+        // add request
+
+    }, {
+        key: 'add',
+        value: function add() {}
     }, {
         key: 'commitWrap',
         value: function commitWrap(key) {
@@ -563,6 +622,11 @@ var Request = function () {
             };
             loopModules(modulesKeys, this.requestConfig.modules, tmpConfig);
             return tmpConfig;
+        }
+    }], [{
+        key: 'PROMISEWRAP',
+        value: function PROMISEWRAP(fn) {
+            return formatFunctionToPromise(true, fn);
         }
     }]);
 
