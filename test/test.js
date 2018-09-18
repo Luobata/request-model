@@ -76,6 +76,7 @@ const rModel = new RequestModel({
     },
 });
 global.rModel = rModel;
+global.RequestModel = RequestModel;
 describe('request-model', () => {
     describe('test commit', () => {
         require('./request-commit');
@@ -88,5 +89,8 @@ describe('request-model', () => {
     });
     describe('test always', () => {
         require('./request-always');
+    });
+    describe('test collection', () => {
+        require('./request-collection');
     });
 });
