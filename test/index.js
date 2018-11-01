@@ -361,10 +361,10 @@ window.onload = () => {
     };
     const test21 = () => {
         rModel
-            .chain()
-            .always(() => {
-                console.log(111);
-            })
+            // .chain()
+            // .always(() => {
+            //     console.log(111);
+            // })
             .commit('getNameById', 1)
             .then(data => {})
             // .commit('reject', 22)
@@ -419,7 +419,7 @@ window.onload = () => {
             });
     };
 
-    test22();
+    test21();
     // test17()
     //     .then(
     //         () => {

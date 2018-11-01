@@ -98,13 +98,13 @@ export default class Request {
 
     private requestConfig: IRequestConfig;
     private setting: IrequestConfig;
-    private action: IAction;
+    private actionCollection: IAction;
 
     constructor(request: IRequestConfig) {
         this.requestConfig = request;
 
         this.setting = this.getRequestConfig();
-        this.action = this.requestConfig.action;
+        this.actionCollection = this.requestConfig.action;
         this.requestFormat();
     }
 
@@ -113,7 +113,7 @@ export default class Request {
     }
 
     public chain(): Chain {
-        return new Chain(this.request, this.action);
+        return new Chain(this.request, this.actionCollection);
     }
 
     public collection(): Collection {
@@ -122,6 +122,26 @@ export default class Request {
 
     // add request
     public add(): void {}
+
+    // wrap-start: wrap method to avoid use chain
+    public commit(...args: any[]): Chain {
+        const chain: Chain = this.chain();
+
+        return chain.commit.apply(chain, args);
+    }
+
+    public action(...args: any[]): Chain {
+        const chain: Chain = this.chain();
+
+        return chain.action.apply(chain, args);
+    }
+
+    public then(...args: any[]): Chain {
+        const chain: Chain = this.chain();
+
+        return chain.then.apply(chain, args);
+    }
+    // wrap end
 
     public commitWrap(key: string, ...args: any[]): object {
         return {

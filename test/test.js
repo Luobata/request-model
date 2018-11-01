@@ -81,6 +81,9 @@ describe('request-model', () => {
     describe('test commit', () => {
         require('./request-commit');
     });
+    describe('test commit without chain', () => {
+        require('./request-commit-no-chain');
+    });
     describe('test config', () => {
         require('./request-config');
     });
