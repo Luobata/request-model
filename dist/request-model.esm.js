@@ -464,6 +464,54 @@ var Request = function () {
 
             return chain.then.apply(chain, args);
         }
+    }, {
+        key: 'finish',
+        value: function finish() {
+            var chain = this.chain();
+
+            for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                args[_key5] = arguments[_key5];
+            }
+
+            return chain.finish.apply(chain, args);
+        }
+        // tslint:disable-next-line no-reserved-keywords
+
+    }, {
+        key: 'catch',
+        value: function _catch() {
+            var chain = this.chain();
+
+            for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                args[_key6] = arguments[_key6];
+            }
+
+            return chain.catch.apply(chain, args);
+        }
+    }, {
+        key: 'always',
+        value: function always() {
+            var chain = this.chain();
+
+            for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                args[_key7] = arguments[_key7];
+            }
+
+            return chain.always.apply(chain, args);
+        }
+        // tslint:disable-next-line no-reserved-keywords
+
+    }, {
+        key: 'finally',
+        value: function _finally() {
+            var chain = this.chain();
+
+            for (var _len8 = arguments.length, args = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+                args[_key8] = arguments[_key8];
+            }
+
+            return chain.finally.apply(chain, args);
+        }
         // wrap end
 
     }, {
@@ -471,8 +519,8 @@ var Request = function () {
         value: function commitWrap(key) {
             var _ref;
 
-            for (var _len5 = arguments.length, args = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-                args[_key5 - 1] = arguments[_key5];
+            for (var _len9 = arguments.length, args = Array(_len9 > 1 ? _len9 - 1 : 0), _key9 = 1; _key9 < _len9; _key9++) {
+                args[_key9 - 1] = arguments[_key9];
             }
 
             return _ref = {}, _defineProperty(_ref, commitToken, true), _defineProperty(_ref, 'key', key), _defineProperty(_ref, 'args', [].concat(args)), _ref;
