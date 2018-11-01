@@ -1,6 +1,6 @@
 {
     "name": "request-model",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A async task excute lib with the chain usage API.",
     "main": "dist/request-model.js",
     "module": "dist/request-model.esm.js",

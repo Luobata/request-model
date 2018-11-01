@@ -410,14 +410,14 @@ var Request = function () {
 
         this.requestConfig = request;
         this.setting = this.getRequestConfig();
-        this.action = this.requestConfig.action;
+        this.actionCollection = this.requestConfig.action;
         this.requestFormat();
     }
 
     _createClass$2(Request, [{
         key: 'chain',
         value: function chain() {
-            return new Chain(this.request, this.action);
+            return new Chain(this.request, this.actionCollection);
         }
     }, {
         key: 'collection',
@@ -429,13 +429,50 @@ var Request = function () {
     }, {
         key: 'add',
         value: function add() {}
+        // wrap-start: wrap method to avoid use chain
+
+    }, {
+        key: 'commit',
+        value: function commit() {
+            var chain = this.chain();
+
+            for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                args[_key2] = arguments[_key2];
+            }
+
+            return chain.commit.apply(chain, args);
+        }
+    }, {
+        key: 'action',
+        value: function action() {
+            var chain = this.chain();
+
+            for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                args[_key3] = arguments[_key3];
+            }
+
+            return chain.action.apply(chain, args);
+        }
+    }, {
+        key: 'then',
+        value: function then() {
+            var chain = this.chain();
+
+            for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                args[_key4] = arguments[_key4];
+            }
+
+            return chain.then.apply(chain, args);
+        }
+        // wrap end
+
     }, {
         key: 'commitWrap',
         value: function commitWrap(key) {
             var _ref;
 
-            for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-                args[_key2 - 1] = arguments[_key2];
+            for (var _len5 = arguments.length, args = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
+                args[_key5 - 1] = arguments[_key5];
             }
 
             return _ref = {}, _defineProperty(_ref, commitToken, true), _defineProperty(_ref, 'key', key), _defineProperty(_ref, 'args', [].concat(args)), _ref;
