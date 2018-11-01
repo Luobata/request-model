@@ -110,14 +110,14 @@ const rModel = new RequestModel({
 -   collection
     Use to get a collection.
 
-    return ```new Collection()```
+    return `new Collection()`
 
 -   PROMISEWRAP(**static**)
 
     Wrap a function to promise.
 
-    params```(fn: Function)```
-    return```Function```
+    params`(fn: Function)`
+    return`Function`
 
 -   commitWrap
 
@@ -141,6 +141,16 @@ const rModel = new RequestModel({
         .finish(data => {
             // data = [1 [2, 4]]
         });
+    ```
+
+-   every method in Chain can be use and the same input and output.
+
+    etc:
+
+    ```js
+    rModel.chain().commit('getNameById', 1);
+    // same as
+    rModel.commit('getNameById', 1);
     ```
 
 ---
@@ -194,36 +204,36 @@ generator after requestModel.chain()
 
 generator after requestModel.collection().
 
-- add
-  add a Function into the collection.
+-   add
+    add a Function into the collection.
 
-  params```add(fn: Function, key?: string)``` The key is not nessary if the fn has its name(not anoymous)
-  return ```Collection```
-  etc:
+    params`add(fn: Function, key?: string)` The key is not nessary if the fn has its name(not anoymous)
+    return `Collection`
+    etc:
 
-  ```Js
-  const collection = rModel.collection();
-  collection.add(
-      RequestModel.PROMISEWRAP((resolve, reject, params) => {
-          setTimeout(() => {
-              resolve(params);
-          }, 0);
-      }),
-      'a',
-  );
-  collection.add(
-      RequestModel.PROMISEWRAP((resolve, reject, params) => {
-          setTimeout(() => {
-              resolve(params);
-          }, 0);
-      }),
-      'b',
-  );
-  collection
-      .commit('a', 1)
-      .commit('b', 2)
-      .finish(data => {
-          assert.deepEqual(data, [1, 2]);
-          done();
-      });
-  ```
+    ```Js
+    const collection = rModel.collection();
+    collection.add(
+        RequestModel.PROMISEWRAP((resolve, reject, params) => {
+            setTimeout(() => {
+                resolve(params);
+            }, 0);
+        }),
+        'a',
+    );
+    collection.add(
+        RequestModel.PROMISEWRAP((resolve, reject, params) => {
+            setTimeout(() => {
+                resolve(params);
+            }, 0);
+        }),
+        'b',
+    );
+    collection
+        .commit('a', 1)
+        .commit('b', 2)
+        .finish(data => {
+            assert.deepEqual(data, [1, 2]);
+            done();
+        });
+    ```
