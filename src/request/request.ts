@@ -141,6 +141,32 @@ export default class Request {
 
         return chain.then.apply(chain, args);
     }
+
+    public finish(...args: any[]): Chain {
+        const chain: Chain = this.chain();
+
+        return chain.finish.apply(chain, args);
+    }
+
+    // tslint:disable-next-line no-reserved-keywords
+    public catch(...args: any[]): Chain {
+        const chain: Chain = this.chain();
+
+        return chain.catch.apply(chain, args);
+    }
+
+    public always(...args: any[]): Chain {
+        const chain: Chain = this.chain();
+
+        return chain.always.apply(chain, args);
+    }
+
+    // tslint:disable-next-line no-reserved-keywords
+    public finally(...args: any[]): Chain {
+        const chain: Chain = this.chain();
+
+        return chain.finally.apply(chain, args);
+    }
     // wrap end
 
     public commitWrap(key: string, ...args: any[]): object {
