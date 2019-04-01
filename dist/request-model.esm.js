@@ -167,7 +167,7 @@ var Chain = function () {
                 this.innerResolve({ resolve: resolve, reject: reject, always: always });
             } else {
                 this.resolve = resolve;
-                this.reject = reject;
+                this.reject = reject ? reject : this.reject;
             }
             return this;
         }
