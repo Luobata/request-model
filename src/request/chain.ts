@@ -164,7 +164,7 @@ export default class Chain {
             this.innerResolve({ resolve, reject, always });
         } else {
             this.resolve = resolve;
-            this.reject = reject;
+            this.reject = reject ? reject : this.reject;
         }
 
         return this;
