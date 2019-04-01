@@ -419,7 +419,38 @@ window.onload = () => {
             });
     };
 
-    test21();
+    const test23 = () => {
+        const xxx = {};
+        rModel
+            .commit('getNameById', 1)
+            .then(data => {
+                console.log(data);
+                console.log(data.a.a);
+            })
+            .catch((data, data2) => {
+                console.log(data);
+                console.log(data2);
+            });
+    };
+
+    const test24 = () => {
+        const xxx = {};
+        rModel
+            .commit('getNameById', 2)
+            .then(data => {
+                console.log(data);
+                console.log(this.$store.commit());
+            })
+            .catch((data, data2) => {
+                console.log(data);
+                console.log(data2);
+            })
+            .finally(() => {
+                console.log(123);
+            });
+    };
+
+    test24();
     // test17()
     //     .then(
     //         () => {

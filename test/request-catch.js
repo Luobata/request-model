@@ -288,3 +288,19 @@ it('method catch reject sync 3', function(done) {
             done();
         });
 });
+
+it('method catch cover by finaly', function(done) {
+    rModel
+        .chain()
+        .commit('getNameById', 1)
+        .then(() => {
+            throw new Error('error');
+        })
+        .catch(data => {
+            assert.deepEqual(data.message, 'error');
+            done();
+        })
+        .finally(data => {
+            assert.deepEqual(data, undefined);
+        });
+});
