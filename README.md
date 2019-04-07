@@ -193,7 +193,7 @@ generator after requestModel.chain()
 
 -   always
 
-    add a always Functin. **It will be called when after last resolve or reject(also resolve and reject could be ampty)**
+    add a always Functin. **It will be called when after last resolve or reject(also resolve and reject could be empty)**
     **not support usage with always only(without commit/then)**
 
     params `(alwaysFn: Function)`
