@@ -436,14 +436,14 @@ window.onload = () => {
     const test24 = () => {
         const xxx = {};
         rModel
-            .commit('getNameById', 2)
+            .commit('error', 2)
             .then(
                 data => {
+                    console.log(this.$store.commit());
                     console.log(data);
-                    // console.log(this.$store.commit());
                 },
                 function() {
-                    console.log(1);
+                    console.log(11);
                 },
                 function() {
                     console.log(22);
@@ -452,10 +452,10 @@ window.onload = () => {
                     console.log(33);
                 },
             )
-            .catch((data, data2) => {
-                console.log(data);
-                console.log(data2);
-            })
+            // .catch((data, data2) => {
+            //     console.log(data);
+            //     console.log(data2);
+            // })
             .finally(() => {
                 console.log(123);
             });

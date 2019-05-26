@@ -238,7 +238,11 @@ export default class Chain {
                 }
                 this.unResolveRejection = null;
             } else if (
-                this.innerRejection(this.unResolveRejection, then.always)
+                this.innerRejection(
+                    this.unResolveRejection,
+                    then.always,
+                    then.before,
+                )
             ) {
                 this.unResolveRejection = null;
             }
@@ -292,9 +296,14 @@ export default class Chain {
     }
 
     // fn may be the always fn
-    private innerRejection(error: any, fn?: Function): boolean {
+    private innerRejection(
+        error: any,
+        fn?: Function,
+        beforeFn?: Function,
+    ): boolean {
         let reject!: Function;
         let always: Function = fn;
+        let before: Function = beforeFn;
         // if (this.waitList.length && !isIdefer(this.waitList[0])) {
         if (this.waitList.length) {
             let index: number = 0;
@@ -305,6 +314,7 @@ export default class Chain {
                 ) {
                     reject = (<Ithen>this.waitList[i]).reject;
                     always = (<Ithen>this.waitList[i]).always;
+                    before = (<Ithen>this.waitList[i]).before;
                     index = i;
                     break;
                 }
@@ -316,6 +326,9 @@ export default class Chain {
         }
         if (reject) {
             this.deferItem = null;
+            if (before) {
+                before();
+            }
             reject(error);
             if (always) {
                 always();
