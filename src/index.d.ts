@@ -13,9 +13,22 @@ export declare class RequestModel {
     public commitAll(commitWrap: IcommitWrap[]): object[];
 
     public commit(key: string, ...args: any[]): Chain;
-    public then(resolve: Function, reject: Function): Chain;
-    public finish(resolve: Function, reject: Function): Chain;
-    public finally(resolve: Function, reject: Function): Chain;
+    public then(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+        before?: Function,
+    ): Chain;
+    public finish(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain;
+    public finally(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain;
     public catch(reject: Function): Chain;
     public always(always: Function): Chain;
     public action(key: string, ...args: any[]): Chain;
@@ -25,9 +38,22 @@ export declare class Chain {
     constructor(request: Request);
 
     public commit(key: string, ...args: any[]): Chain;
-    public then(resolve: Function, reject: Function): Chain;
-    public finish(resolve: Function, reject: Function): Chain;
-    public finally(resolve: Function, reject: Function): Chain;
+    public then(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+        before?: Function,
+    ): Chain;
+    public finish(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain;
+    public finally(
+        resolve: Function,
+        reject?: Function,
+        always?: Function,
+    ): Chain;
     public catch(reject: Function): Chain;
     public always(always: Function): Chain;
     public action(key: string, ...args: any[]): Chain;
