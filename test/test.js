@@ -93,6 +93,9 @@ describe('request-model', () => {
     describe('test always', () => {
         require('./request-always');
     });
+    describe('test before', () => {
+        require('./request-before');
+    });
     describe('test collection', () => {
         require('./request-collection');
     });

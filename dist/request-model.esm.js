@@ -148,15 +148,16 @@ var Chain = function () {
         }
     }, {
         key: 'then',
-        value: function then(resolve, reject, always) {
+        value: function then(resolve, reject, always, before) {
             if (this.deferItem) {
                 this.waitList.push({
                     resolve: resolve,
                     reject: reject,
-                    always: always
+                    always: always,
+                    before: before
                 });
             } else {
-                this.innerResolve({ resolve: resolve, reject: reject, always: always });
+                this.innerResolve({ resolve: resolve, reject: reject, always: always, before: before });
             }
             return this;
         }
@@ -237,6 +238,9 @@ var Chain = function () {
             var deferItem = void 0;
             if (this.unResolveRejection) {
                 if (then.reject) {
+                    if (then.before) {
+                        then.before();
+                    }
                     then.reject(this.unResolveRejection);
                     if (then.always) {
                         then.always();
@@ -248,6 +252,9 @@ var Chain = function () {
                 return this;
             } else {
                 try {
+                    if (then.before) {
+                        then.before();
+                    }
                     deferItem = then.resolve(result);
                     if (then.always) {
                         then.always();

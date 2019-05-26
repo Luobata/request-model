@@ -437,10 +437,21 @@ window.onload = () => {
         const xxx = {};
         rModel
             .commit('getNameById', 2)
-            .then(data => {
-                console.log(data);
-                console.log(this.$store.commit());
-            })
+            .then(
+                data => {
+                    console.log(data);
+                    // console.log(this.$store.commit());
+                },
+                function() {
+                    console.log(1);
+                },
+                function() {
+                    console.log(22);
+                },
+                function() {
+                    console.log(33);
+                },
+            )
             .catch((data, data2) => {
                 console.log(data);
                 console.log(data2);
