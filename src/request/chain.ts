@@ -20,6 +20,7 @@ interface Ithen {
     resolve: Function;
     reject: Function;
     always?: Function;
+    before?: Function;
 }
 
 interface IcommitObj {
@@ -141,15 +142,17 @@ export default class Chain {
         resolve: Function,
         reject?: Function,
         always?: Function,
+        before?: Function,
     ): Chain {
         if (this.deferItem) {
             this.waitList.push({
                 resolve,
                 reject,
                 always,
+                before,
             });
         } else {
-            this.innerResolve({ resolve, reject, always });
+            this.innerResolve({ resolve, reject, always, before });
         }
 
         return this;
@@ -226,6 +229,9 @@ export default class Chain {
         let deferItem: any;
         if (this.unResolveRejection) {
             if (then.reject) {
+                if (then.before) {
+                    then.before();
+                }
                 then.reject(this.unResolveRejection);
                 if (then.always) {
                     then.always();
@@ -240,6 +246,9 @@ export default class Chain {
             return this;
         } else {
             try {
+                if (then.before) {
+                    then.before();
+                }
                 deferItem = then.resolve(result);
                 if (then.always) {
                     then.always();
