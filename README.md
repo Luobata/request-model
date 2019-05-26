@@ -171,7 +171,7 @@ generator after requestModel.chain()
 
     join your commit chain with another Function.
 
-    params `(resolve: Function, ?reject: Function, ?always: Function)`
+    params `(resolve: Function, ?reject: Function, ?always: Function, ?before: Function)`
 
     return `Chain`
 
