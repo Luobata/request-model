@@ -246,7 +246,7 @@ var Chain = function () {
                         then.always();
                     }
                     this.unResolveRejection = null;
-                } else if (this.innerRejection(this.unResolveRejection, then.always)) {
+                } else if (this.innerRejection(this.unResolveRejection, then.always, then.before)) {
                     this.unResolveRejection = null;
                 }
                 return this;
@@ -295,9 +295,10 @@ var Chain = function () {
 
     }, {
         key: 'innerRejection',
-        value: function innerRejection(error, fn) {
+        value: function innerRejection(error, fn, beforeFn) {
             var reject = void 0;
             var always = fn;
+            var before = beforeFn;
             // if (this.waitList.length && !isIdefer(this.waitList[0])) {
             if (this.waitList.length) {
                 var index = 0;
@@ -305,6 +306,7 @@ var Chain = function () {
                     if (!isIdefer(this.waitList[i]) && this.waitList[i].reject) {
                         reject = this.waitList[i].reject;
                         always = this.waitList[i].always;
+                        before = this.waitList[i].before;
                         index = i;
                         break;
                     }
@@ -316,6 +318,9 @@ var Chain = function () {
             }
             if (reject) {
                 this.deferItem = null;
+                if (before) {
+                    before();
+                }
                 reject(error);
                 if (always) {
                     always();
